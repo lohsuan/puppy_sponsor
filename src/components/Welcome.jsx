@@ -25,7 +25,7 @@ const Welcome = () => {
 
     const handleSubmit = (e) => {
         const { addressTo, amount, keyword, message } = formData;
-
+        console.log(currentAccount)
         e.preventDefault();
 
         if (!addressTo || !amount || !keyword || !message) return;
