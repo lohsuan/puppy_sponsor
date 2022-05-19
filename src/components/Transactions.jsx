@@ -42,7 +42,7 @@ const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword,
     );
 };
 
-const Transactions = () => {
+const Transactions = (props) => {
     const { transactions, currentAccount } = useContext(TransactionContext);
 
     return (
@@ -60,7 +60,9 @@ const Transactions = () => {
 
                 <div className="flex flex-wrap justify-center items-center mt-10">
                     {/* {[...dummyData, ...transactions].reverse().map((transaction, i) => ( */}
-                    {[...transactions].reverse().map((transaction, i) => (
+                    {props.content == "all" ? [...transactions].reverse().map((transaction, i) => (
+                        <TransactionsCard key={i} {...transaction} />
+                    )) : [...transactions].filter(x => x.addressFrom.toLowerCase() == currentAccount).reverse().map((transaction, i) => (
                         <TransactionsCard key={i} {...transaction} />
                     ))}
                 </div>
