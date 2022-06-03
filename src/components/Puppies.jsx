@@ -29,7 +29,7 @@ const PuppyCard = ({ id, name, imageUrl }) => {
     );
 };
 
-const Puppys = () => {
+const Puppies = () => {
     const { currentAccount } = useContext(TransactionContext)
 
     return (
@@ -37,7 +37,7 @@ const Puppys = () => {
             <div className="flex flex-col md:p-12 py-12 px-4">
                 {currentAccount ? (
                     <h3 className="text-white text-3xl text-center my-2">
-                        All Puppys
+                        All Puppies
                     </h3>
                 ) : (
                     <h3 className="text-white text-3xl text-center my-2">
@@ -56,4 +56,4 @@ const Puppys = () => {
     );
 };
 
-export default Puppys;
+export default Puppies;

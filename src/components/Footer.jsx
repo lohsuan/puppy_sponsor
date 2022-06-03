@@ -7,7 +7,7 @@ const Footer = () => (
         <img src={logo} alt="logo" className="w-16" />
 
         <div className="flex justify-center items-center flex-col mt-5">
-            <p className="text-white text-sm text-center">Come join us for the better place for all cute puppys</p>
+            <p className="text-white text-sm text-center">Come join us for the better place for all cute puppies</p>
             <p className="text-white text-sm text-center font-medium mt-2">info@puppysponsor.com</p>
         </div>
 
