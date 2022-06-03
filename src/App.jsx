@@ -1,4 +1,4 @@
-import { Navbar, Welcome, Services, Footer, Transactions } from "./components";
+import { Navbar, Welcome, Services, Footer, Transactions, Puppys } from "./components";
 import { Routes, Route } from "react-router-dom";
 
 const App = () => {
@@ -9,6 +9,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Welcome />} />
           {/* <Route path="services" element={<Services />} /> */}
+          <Route path="puppys" element={[<Puppys key="puppys" />, <Services key="services"/>]} />
           <Route path="transactions" element={[<Transactions key="transactions" content="all"/>, <Services key="services"/>]} />
           <Route path="my-transactions" element={[<Transactions key="transactions" content="my"/>, <Services key="services"/>]} />
           {/* <Welcome /> */}
