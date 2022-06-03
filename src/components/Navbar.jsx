@@ -21,7 +21,7 @@ const Navbar = () => {
             </div>
             <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial">
                 <NavBarItem title="Home" path="" />
-                <NavBarItem title="Puppys" path="" />
+                <NavBarItem title="Puppies" path="puppies" />
                 <NavBarItem title="Love Records" path="transactions" />
                 <NavBarItem title="My Records" path="my-transactions" />
             </ul>
@@ -40,7 +40,7 @@ const Navbar = () => {
                             <AiOutlineClose onClick={() => setToggleMenu(false)} />
                         </li>
                         <NavBarItem title="Home" classprops="my-2 text-lg" path="" />
-                        <NavBarItem title="Puppys" classprops="my-2 text-lg" path="" />
+                        <NavBarItem title="Puppies" classprops="my-2 text-lg" path="puppies" />
                         <NavBarItem title="Love Records" classprops="my-2 text-lg" path="transactions" />
                         <NavBarItem title="My Records" classprops="my-2 text-lg" path="my-transactions" />
                     </ul>

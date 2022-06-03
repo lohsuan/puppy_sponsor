@@ -21,16 +21,16 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 );
 
 const Welcome = () => {
-    const { currentAccount, connectWallet, handleChange, sendTransaction, formData, isLoading } = useContext(TransactionContext);
+    const { currentAccount, connectWallet, handleChange, donateForFood, formData, isLoading } = useContext(TransactionContext);
 
     const handleSubmit = (e) => {
-        const { addressTo, amount, keyword, message } = formData;
+        const { amount, keyword, message } = formData;
         console.log(currentAccount)
         e.preventDefault();
 
-        if (!addressTo || !amount || !keyword || !message) return;
+        if ( !amount || !keyword || !message) return;
 
-        sendTransaction();
+        donateForFood();
     };
 
     return (
@@ -40,7 +40,7 @@ const Welcome = () => {
             <div className="flex mf:flex-row flex-col items-start justify-between md:p-20 py-12 px-4">
                 <div className="flex flex-1 justify-start items-start flex-col mf:mr-10">
                     <h1 className="text-3xl sm:text-5xl text-white text-gradient py-1">
-                        Emit your Love <br /> For puppys
+                        Emit your Love <br /> For puppies
                     </h1>
                     <p className="text-left mt-5 text-white md:w-9/12 w-11/12 text-base">
                         Send your love easily on Puppy Sponsor accross the world.
@@ -101,7 +101,6 @@ const Welcome = () => {
 
                     {/* input holder */}
                     <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
-                        <Input placeholder="Address To" name="addressTo" type="text" handleChange={handleChange} />
                         <Input placeholder="Amount (ETH)" name="amount" type="number" handleChange={handleChange} />
                         <Input placeholder="Keyword (Gif)" name="keyword" type="text" handleChange={handleChange} />
                         <Input placeholder="Enter Message" name="message" type="text" handleChange={handleChange} />
