@@ -22,6 +22,8 @@ export const TransactionsProvider = ({ children }) => {
     const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
     const [transactions, setTransactions] = useState([]);
 
+    const contract = createEthereumContract();
+
     const handleChange = (e, name) => {
         setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
     };
@@ -29,7 +31,7 @@ export const TransactionsProvider = ({ children }) => {
     const getAllTransactions = async () => {
         try {
             if (ethereum) {
-                const contract = createEthereumContract();
+                
                 const availableTransactions = await contract.getAllTransactions();
 
                 const structuredTransactions = availableTransactions.map((transaction) => ({
@@ -74,7 +76,6 @@ export const TransactionsProvider = ({ children }) => {
     const checkIfTransactionsExists = async () => {
         try {
             if (ethereum) {
-                const contract = createEthereumContract();
                 const currentTransactionCount = await contract.transactionCount();
 
                 window.localStorage.setItem("transactionCount", currentTransactionCount);
@@ -103,7 +104,6 @@ export const TransactionsProvider = ({ children }) => {
         try {
             if (ethereum) {
                 const { amount, keyword, message } = formData;
-                const contract = createEthereumContract();
                 const parsedAmount = ethers.utils.parseEther(amount);
                 const puppiesOwner = await contract.owner();
 
