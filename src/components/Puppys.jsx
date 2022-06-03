@@ -2,7 +2,7 @@ import React from "react";
 import { useContext } from "react";
 import { TransactionContext } from "../context/TransactionContext";
 
-const PuppyCard = ({ id, name, age, gender, imageUrl }) => {
+const PuppyCard = ({ id, name, imageUrl }) => {
     const handleDonate = () => { }
 
     return (
@@ -12,7 +12,6 @@ const PuppyCard = ({ id, name, age, gender, imageUrl }) => {
             <div className="flex flex-col items-center w-full mt-3">
                 <div className="display-flex justify-start w-full mb-6 p-2">
                     <p className="text-white text-base">Name: {name}</p>
-                    <p className="text-white text-base">Age: {age}</p>
                 </div>
                 <img
                     src={imageUrl}
@@ -23,7 +22,7 @@ const PuppyCard = ({ id, name, age, gender, imageUrl }) => {
                     onClick={() => { handleDonate() }}
                     className="bg-black p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl"
                 >
-                    <p className="text-[#37c7da] font-bold">Donate for {gender == "M" ? "him" : "her"}</p>
+                    <p className="text-[#37c7da] font-bold">Donate to {name}</p>
                 </button>
             </div>
         </div>
@@ -42,16 +41,14 @@ const Puppys = () => {
                     </h3>
                 ) : (
                     <h3 className="text-white text-3xl text-center my-2">
-                        Connect your account to see the latest transactions
+                        Connect your account to see the cute puppies
                     </h3>
                 )}
 
                 <div className="flex flex-wrap justify-center items-center mt-10">
                     <PuppyCard
-                        id={1}
+                        id="1"
                         name="Lucky"
-                        age={2}
-                        gender="F"
                         imageUrl="https://i.imgur.com/Abs2mcS.png" />
                 </div>
             </div>

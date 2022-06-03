@@ -10,13 +10,13 @@ const { ethereum } = window;
 const createEthereumContract = () => {
     const provider = new ethers.providers.Web3Provider(ethereum);
     const signer = provider.getSigner();
-    const transactionsContract = new ethers.Contract(contractAddress, contractABI, signer);
+    const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-    return transactionsContract;
+    return contract;
 };
 
 export const TransactionsProvider = ({ children }) => {
-    const [formData, setformData] = useState({ addressTo: "", amount: "", keyword: "", message: "" });
+    const [formData, setformData] = useState({ amount: "", keyword: "", message: "" });
     const [currentAccount, setCurrentAccount] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
@@ -29,9 +29,8 @@ export const TransactionsProvider = ({ children }) => {
     const getAllTransactions = async () => {
         try {
             if (ethereum) {
-                const transactionsContract = createEthereumContract();
-
-                const availableTransactions = await transactionsContract.getAllTransactions();
+                const contract = createEthereumContract();
+                const availableTransactions = await contract.getAllTransactions();
 
                 const structuredTransactions = availableTransactions.map((transaction) => ({
                     addressTo: transaction.receiver,
@@ -75,8 +74,8 @@ export const TransactionsProvider = ({ children }) => {
     const checkIfTransactionsExists = async () => {
         try {
             if (ethereum) {
-                const transactionsContract = createEthereumContract();
-                const currentTransactionCount = await transactionsContract.getTransactionCount();
+                const contract = createEthereumContract();
+                const currentTransactionCount = await contract.transactionCount();
 
                 window.localStorage.setItem("transactionCount", currentTransactionCount);
             }
@@ -100,25 +99,26 @@ export const TransactionsProvider = ({ children }) => {
         }
     };
 
-    const sendTransaction = async () => {
+    const donateForFood = async () => {
         try {
             if (ethereum) {
-                const { addressTo, amount, keyword, message } = formData;
-                const transactionsContract = createEthereumContract();
+                const { amount, keyword, message } = formData;
+                const contract = createEthereumContract();
                 const parsedAmount = ethers.utils.parseEther(amount);
+                const puppiesOwner = await contract.owner();
 
                 await ethereum.request({
                     method: "eth_sendTransaction",
                     params: [{
                         from: currentAccount,
-                        to: addressTo,
+                        to: puppiesOwner,
                         gas: "0x5208", // need to be hexidecimal (21000 GWEI)
                         value: parsedAmount._hex, // need to be hexidecimal
                     }],
                 });
 
                 // add transaction to our contract
-                const transactionHash = await transactionsContract.addToBlockchain(addressTo, parsedAmount, message, keyword);
+                const transactionHash = await contract.donateForFood(parsedAmount, message, keyword);
 
                 setIsLoading(true);
                 console.log(`Loading - ${transactionHash.hash}`);
@@ -126,7 +126,7 @@ export const TransactionsProvider = ({ children }) => {
                 console.log(`Success - ${transactionHash.hash}`);
                 setIsLoading(false);
 
-                const transactionsCount = await transactionsContract.getTransactionCount();
+                const transactionsCount = await contract.transactionCount();
 
                 setTransactionCount(transactionsCount.toNumber());
                 window.location.reload();
@@ -152,7 +152,7 @@ export const TransactionsProvider = ({ children }) => {
                 transactions,
                 currentAccount,
                 isLoading,
-                sendTransaction,
+                donateForFood,
                 handleChange,
                 formData,
             }}

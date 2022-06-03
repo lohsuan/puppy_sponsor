@@ -3,9 +3,9 @@
 pragma solidity 0.8.14;
 
 contract Transactions {
-    address owner;
-    uint256 transactionCount;
-    uint256 totalAmount;
+    address public owner;
+    uint256 public transactionCount;
+    uint256 public totalAmount;
 
     event Transfer(address from, address receiver, uint amount, string message, uint256 timestamp, string keyword, string metaData);
     event PuppyAdded(string dogId, string imageUrl, uint256 timestamp);
@@ -73,6 +73,7 @@ contract Transactions {
         return puppies;
     }
 
+    // get donate details by dogId
     function getPuppyDonateDetailById(string memory dogId) public view returns (TransferStruct[] memory) {
         return puppyMap[dogId];
     }
@@ -80,13 +81,5 @@ contract Transactions {
     // all transactions (optimize: paging)
     function getAllTransactions() public view returns (TransferStruct[] memory) {
         return transactions;
-    }
-
-    function getTransactionCount() public view returns (uint256) {
-        return transactionCount;
-    }
-
-    function getTotalAmount() public view returns (uint256) {
-        return totalAmount;
     }
 }
