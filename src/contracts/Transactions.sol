@@ -73,7 +73,6 @@ contract Transactions {
         return puppies;
     }
 
-    // get donate details by dogId
     function getPuppyDonateDetailById(string memory dogId) public view returns (TransferStruct[] memory) {
         return puppyMap[dogId];
     }
