@@ -1,29 +1,32 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import { TransactionContext } from "../context/TransactionContext";
 
-const PuppyCard = ({ dogId, imageUrl, name, birthday, description}) => {
+const PuppyCard = ({ dogId, imageUrl, name, birthday, description }) => {
     const handleDonate = () => { }
 
     return (
         <div className="bg-[#181918] m-4 flex flex-1 2xl:min-w-[300px] 2xl:max-w-[350px] sm:min-w-[270px] sm:max-w-[300px]
                          min-w-full flex-col p-3 rounded-md hover:shadow-2xl"
         >
-            <div className="flex flex-col items-center w-full mt-3">
+            <div className="flex flex-col justify-between items-center h-full w-full mt-3">
+
                 <div className="display-flex justify-start w-full mb-6 p-2">
                     <p className="text-white text-base">Name: {name}</p>
                     <p className="text-white text-base">Birthday: {birthday}</p>
-                    <p className="text-white text-base">Description: {dogId}</p>
+                    <p className="text-white text-base">Description: {description}</p>
                 </div>
-                <img src={imageUrl} />
 
-                <button
-                    type="button"
-                    onClick={() => { handleDonate() }}
-                    className="bg-black p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl"
-                >
-                    <p className="text-[#37c7da] font-bold">Donate to XXX</p>
-                </button>
+                <div className="flex flex-col items-center">
+                    <img src={imageUrl} alt="dog" />
+                    <button
+                        type="button"
+                        onClick={handleDonate}
+                        className="bg-black p-3 px-5 w-max rounded-3xl -translate-y-1/2 shadow-2xl"
+                    >
+                        <p className="text-[#37c7da] font-bold">Donate to XXX</p>
+                    </button>
+                </div>
+
             </div>
         </div>
     );
@@ -45,14 +48,12 @@ const Puppies = () => {
                     </h3>
                 )}
 
-                <div className="flex flex-wrap justify-center items-center mt-10">
-                    {[...puppies].map((transaction, i) => (
-                        <PuppyCard key={i} {...transaction} />
-                    ))}
-                    {/* <PuppyCard
-                        id="1"
-                        name="Lucky"
-                        imageUrl="https://i.imgur.com/Abs2mcS.png" /> */}
+                <div className="flex flex-wrap justify-center items-stretch mt-10">
+                    {
+                        puppies && puppies.map((transaction, i) => (
+                            <PuppyCard key={i} {...transaction} />
+                        ))
+                    }
                 </div>
             </div>
         </div>

@@ -61,14 +61,14 @@ export const TransactionsProvider = ({ children }) => {
             
                 const availablePuppies = await contract.getAllPuppys();
 
-                const structuredPuppies = availablePuppies.map((puppy) => ({
-                    dogId: puppy.dogId,
-                    imageUrl: puppy.imageUrl
-                }));
+                // const structuredPuppies = availablePuppies.map((puppy) => ({
+                //     dogId: puppy.dogId,
+                //     imageUrl: puppy.imageUrl
+                // }));
 
-                console.log("getAllPuppies", structuredPuppies);
+                console.log("getAllPuppies", availablePuppies);
 
-                setPuppies(structuredPuppies);
+                setPuppies(availablePuppies);
             } else {
                 console.log("Ethereum is not present");
             }
@@ -86,8 +86,8 @@ export const TransactionsProvider = ({ children }) => {
 
             if (accounts.length) {
                 setCurrentAccount(accounts[0]);
-                getAllPuppies();
-                getAllTransactions();
+                await getAllPuppies();
+                await getAllTransactions();
             } else {
                 console.log("No accounts found");
             }
