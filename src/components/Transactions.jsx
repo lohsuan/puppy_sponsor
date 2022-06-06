@@ -23,10 +23,7 @@ const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword,
                     </a>
                     <p className="text-white text-base">Amount: {amount} ETH</p>
                     {message && (
-                        <>
-                            <br />
-                            <p className="text-white text-base">Message: {message}</p>
-                        </>
+                        <p className="text-white text-base">Message: {message}</p>
                     )}
                 </div>
                 <img

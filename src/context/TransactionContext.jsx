@@ -21,6 +21,7 @@ export const TransactionsProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [transactionCount, setTransactionCount] = useState(localStorage.getItem("transactionCount"));
     const [transactions, setTransactions] = useState([]);
+    const [puppies, setPuppies] = useState([]);
 
     const contract = createEthereumContract();
 
@@ -43,7 +44,7 @@ export const TransactionsProvider = ({ children }) => {
                     amount: parseInt(transaction.amount._hex) / (10 ** 18)
                 }));
 
-                console.log(structuredTransactions);
+                console.log("getAllTransactions", structuredTransactions);
 
                 setTransactions(structuredTransactions);
             } else {
@@ -54,6 +55,28 @@ export const TransactionsProvider = ({ children }) => {
         }
     };
 
+    const getAllPuppies = async () => {
+        try {
+            if (ethereum) {
+            
+                const availablePuppies = await contract.getAllPuppys();
+
+                // const structuredPuppies = availablePuppies.map((puppy) => ({
+                //     dogId: puppy.dogId,
+                //     imageUrl: puppy.imageUrl
+                // }));
+
+                console.log("getAllPuppies", availablePuppies);
+
+                setPuppies(availablePuppies);
+            } else {
+                console.log("Ethereum is not present");
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const checkIfWalletIsConnect = async () => {
         try {
             if (!ethereum) return alert("Please install MetaMask.");
@@ -63,8 +86,8 @@ export const TransactionsProvider = ({ children }) => {
 
             if (accounts.length) {
                 setCurrentAccount(accounts[0]);
-
-                getAllTransactions();
+                await getAllPuppies();
+                await getAllTransactions();
             } else {
                 console.log("No accounts found");
             }
@@ -150,6 +173,7 @@ export const TransactionsProvider = ({ children }) => {
                 transactionCount,
                 connectWallet,
                 transactions,
+                puppies,
                 currentAccount,
                 isLoading,
                 donateForFood,
