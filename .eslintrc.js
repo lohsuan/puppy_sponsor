@@ -10,6 +10,7 @@ module.exports = {
     'prettier',
     'standard'
   ],
+  ignorePatterns: ["**/dist/*"],
   parserOptions: {
     ecmaFeatures: {
       jsx: true
