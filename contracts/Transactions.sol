@@ -1,7 +1,8 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.8.14;
+pragma solidity ^0.8.14;
 
+// TODO: Comprehensive Security Check, refer to https://consensys.github.io/smart-contract-best-practices
 contract Transactions {
     address public owner;
     uint256 public transactionCount;
@@ -10,7 +11,7 @@ contract Transactions {
     event Transfer(address from, address receiver, uint amount, string message, uint256 timestamp, string keyword, string metaData);
     event PuppyAdded(string dogId, string imageUrl, uint256 timestamp);
 
-    struct TransferStruct { 
+    struct TransferStruct {
         address sender;
         address receiver;
         uint amount;
@@ -19,7 +20,7 @@ contract Transactions {
         string keyword;
         string metaData; // dogId, -1 for donate food
     }
-    
+
     struct Puppy {
         string dogId;
         string imageUrl;
@@ -27,7 +28,7 @@ contract Transactions {
 
     TransferStruct[] transactions;
     Puppy[] puppies;
-    mapping (string => TransferStruct[]) puppyMap;  // dogId => Transaction[]
+    mapping(string => TransferStruct[]) puppyMap;  // dogId => Transaction[]
 
     constructor(address _owner) {
         owner = _owner;
@@ -54,12 +55,12 @@ contract Transactions {
         emit Transfer(msg.sender, owner, amount, message, block.timestamp, keyword, "-1");
     }
 
-    function donateForPupppy(string memory dogId, uint amount, string memory message, string memory keyword) public {
+    function donateForPuppy(string memory dogId, uint amount, string memory message, string memory keyword) public {
         transactionCount += 1;
         totalAmount += amount;
         transactions.push(TransferStruct(msg.sender, owner, amount, message, block.timestamp, keyword, dogId));
         puppyMap[dogId].push(TransferStruct(msg.sender, owner, amount, message, block.timestamp, keyword, dogId));
-        
+
         emit Transfer(msg.sender, owner, amount, message, block.timestamp, keyword, dogId);
     }
 
@@ -69,7 +70,7 @@ contract Transactions {
         emit PuppyAdded(dogId, imageUrl, block.timestamp);
     }
 
-    function getAllPuppys() public view returns (Puppy[] memory) {
+    function getAllPuppies() public view returns (Puppy[] memory) {
         return puppies;
     }
 
