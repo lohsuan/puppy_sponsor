@@ -127,8 +127,8 @@ export const TransactionsProvider = ({ children }) => {
             {
               from: currentAccount,
               to: puppiesOwner,
-              gas: '0x5208', // need to be hexidecimal (21000 GWEI)
-              value: parsedAmount._hex // need to be hexidecimal
+              gas: '0x5208', // need to be hexadecimal (21000 GWei)
+              value: parsedAmount._hex // need to be hexadecimal
             }
           ]
         })
