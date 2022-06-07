@@ -1,5 +1,5 @@
-import { Navbar, Welcome, Services, Footer, Transactions, Puppies } from "./components";
-import { Routes, Route } from "react-router-dom";
+import { Navbar, Welcome, Services, Footer, Transactions, Puppies } from './components'
+import { Routes, Route } from 'react-router-dom'
 
 const App = () => {
   return (
@@ -7,11 +7,23 @@ const App = () => {
       <div className="gradient-bg-welcome">
         <Navbar />
         <Routes>
-          <Route path="/" element={[<Welcome key="welcome" />, <Services key="services"/>]} />
+          <Route path="/" element={[<Welcome key="welcome" />, <Services key="services" />]} />
           {/* <Route path="services" element={<Services />} /> */}
           <Route path="puppies" element={<Puppies key="puppies" />} />
-          <Route path="transactions" element={[<Transactions key="transactions" content="all"/>, <Services key="services"/>]} />
-          <Route path="my-transactions" element={[<Transactions key="transactions" content="my"/>, <Services key="services"/>]} />
+          <Route
+            path="transactions"
+            element={[
+              <Transactions key="transactions" content="all" />,
+              <Services key="services" />
+            ]}
+          />
+          <Route
+            path="my-transactions"
+            element={[
+              <Transactions key="transactions" content="my" />,
+              <Services key="services" />
+            ]}
+          />
           {/* <Welcome /> */}
           {/* <Services /> */}
           {/* <Transactions /> */}
