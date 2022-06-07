@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 const APIKEY = import.meta.env.VITE_GIPHY_API
 
-const useFetch = ({ keyword }) => {
+const useFetchedGiphyImg = ({ keyword }) => {
   const [gifUrl, setGifUrl] = useState('')
 
   const fetchGifs = async () => {
@@ -29,4 +29,4 @@ const useFetch = ({ keyword }) => {
   return gifUrl
 }
 
-export default useFetch
+export default useFetchedGiphyImg
