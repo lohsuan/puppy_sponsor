@@ -26,6 +26,7 @@ const Navbar = () => {
         <NavBarItem title="Puppies" path="puppies" />
         <NavBarItem title="Love Records" path="transactions" />
         <NavBarItem title="My Records" path="my-transactions" />
+        <NavBarItem title="Edit Puppies" path="admin" />
       </ul>
       <div className="flex relative">
         {!toggleMenu && (
@@ -54,6 +55,7 @@ const Navbar = () => {
             <NavBarItem title="Puppies" classprops="my-2 text-lg" path="puppies" />
             <NavBarItem title="Love Records" classprops="my-2 text-lg" path="transactions" />
             <NavBarItem title="My Records" classprops="my-2 text-lg" path="my-transactions" />
+            <NavBarItem title="Edit Puppies" classprops="my-2 text-lg" path="admin" />
           </ul>
         )}
       </div>
