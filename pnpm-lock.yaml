@@ -12,6 +12,7 @@ specifiers:
   eslint-plugin-promise: ^6.0.0
   eslint-plugin-react: ^7.30.0
   ethers: ^5.6.8
+  flowbite-datepicker: ^1.2.1
   postcss: ^8.4.14
   prettier: ^2.6.2
   react: ^18.1.0
@@ -24,6 +25,7 @@ specifiers:
 
 dependencies:
   ethers: 5.6.8
+  flowbite-datepicker: 1.2.1
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
   react-icons: 4.4.0_react@18.1.0
@@ -727,6 +729,10 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
     dev: true
+
+  /@popperjs/core/2.11.5:
+    resolution: {integrity: sha512-9X2obfABZuDVLCgPK9aX0a/x4jaOEweTTWE2+9sr0Qqqevj2Uv5XorvusThmc9XGYpS9yI+fhh8RTafBtGposw==}
+    dev: false
 
   /@rollup/pluginutils/4.2.1:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -1925,6 +1931,19 @@ packages:
     resolution: {integrity: sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==}
     dev: true
 
+  /flowbite-datepicker/1.2.1:
+    resolution: {integrity: sha512-1J+92bWRZYUyKlXi+A+nIfL/qXjYT1RDIMYlRTky5VKySVzvEdVfKSxqy2dHtMnM/t7fFxZTh+MTN3xk4MLnOw==}
+    dependencies:
+      flowbite: 1.4.7
+    dev: false
+
+  /flowbite/1.4.7:
+    resolution: {integrity: sha512-/U0gOIY9RFlMWEMAVnjZpVYzSG0uEDlZ0kLCuTURukXSxqkWi3xulqooPlfmf2aw0wEMJy7d/IWEm3DntP4aUw==}
+    dependencies:
+      '@popperjs/core': 2.11.5
+      mini-svg-data-uri: 1.4.4
+    dev: false
+
   /fraction.js/4.2.0:
     resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}
     dev: true
@@ -2380,6 +2399,11 @@ packages:
       braces: 3.0.2
       picomatch: 2.3.1
     dev: true
+
+  /mini-svg-data-uri/1.4.4:
+    resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
+    hasBin: true
+    dev: false
 
   /minimalistic-assert/1.0.1:
     resolution: {integrity: sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A==}
