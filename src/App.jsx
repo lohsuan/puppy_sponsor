@@ -11,8 +11,20 @@ const App = () => {
           {/* <Route path="services" element={<Services />} /> */}
           <Route path="puppies" element={<Puppies key="puppies" />} />
           <Route path="puppyDetail" element={<PuppyDetail key="puppyDetail" />} />
-          <Route path="transactions" element={[<Transactions key="transactions" content="all"/>, <Services key="services"/>]} />
-          <Route path="my-transactions" element={[<Transactions key="transactions" content="my"/>, <Services key="services"/>]} />
+          <Route
+            path="transactions"
+            element={[
+              <Transactions key="transactions" content="all" />,
+              <Services key="services" />
+            ]}
+          />
+          <Route
+            path="my-transactions"
+            element={[
+              <Transactions key="transactions" content="my" />,
+              <Services key="services" />
+            ]}
+          />
           {/* <Welcome /> */}
           {/* <Services /> */}
           {/* <Transactions /> */}
