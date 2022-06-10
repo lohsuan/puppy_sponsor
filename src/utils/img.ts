@@ -3,12 +3,12 @@
  * see https://github.com/Xanonymous-GitHub/imgur-services for more details.
  * */
 
-import axios from "axios";
+import axios from 'axios'
 
 const imgServicesApiUrl = 'https://imgur-up.herokuapp.com'
 
 export interface ResponseError {
-  readonly statusCode?: number,
+  readonly statusCode?: number
   readonly message?: string
 }
 
@@ -29,16 +29,19 @@ const errorResolver = (e: any): ResponseError => {
 }
 
 export const isImageFile = (file: File): boolean => {
-  const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+  const acceptedImageTypes = ['image/gif', 'image/jpeg', 'image/png']
   return file && acceptedImageTypes.includes(file['type'])
 }
 
-export const uploadMedia = async (file: File, preferredType?: string): Promise<UploadedMedia | ResponseError> => {
-  const formData = new FormData();
-  formData.append("file", file)
-  preferredType && formData.append("type", preferredType)
+export const uploadMedia = async (
+  file: File,
+  preferredType?: string
+): Promise<UploadedMedia | ResponseError> => {
+  const formData = new FormData()
+  formData.append('file', file)
+  preferredType && formData.append('type', preferredType)
   try {
-    const {data} = await axios.post(imgServicesApiUrl + '/upload', formData, {
+    const { data } = await axios.post(imgServicesApiUrl + '/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
