@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { transactionContext } from '../context/TransactionContext'
+import { Link } from 'react-router-dom'
 
-const PuppyCard = ({ imageUrl, name, birthday, description }) => {
-  const handleDonate = () => {}
+const PuppyCard = ({ dogId, imageUrl, name, birthday, description }) => {
 
   return (
     <div
@@ -18,13 +18,12 @@ const PuppyCard = ({ imageUrl, name, birthday, description }) => {
 
         <div className="flex flex-col items-center">
           <img src={imageUrl} alt="dog" />
-          <button
-            type="button"
-            onClick={handleDonate}
-            className="bg-black p-3 px-5 w-max rounded-3xl -translate-y-1/2 shadow-2xl"
-          >
-            <p className="text-[#37c7da] font-bold">Donate to XXX</p>
-          </button>
+          <Link to={"/puppies/" + dogId}>
+            <div className="bg-black p-3 px-5 w-max rounded-3xl -translate-y-1/2 shadow-2xl">
+              <p className="text-[#37c7da] font-bold">Donate to XXX</p>
+            </div>
+          </Link>
+
         </div>
       </div>
     </div>
@@ -32,7 +31,7 @@ const PuppyCard = ({ imageUrl, name, birthday, description }) => {
 }
 
 const Puppies = () => {
-  const { puppies, currentAccount } = useContext(TransactionContext)
+  const { puppies, currentAccount } = useContext(transactionContext)
 
   return (
     <div className="flex w-full justify-center items-center 2xl:px-20 gradient-bg-transactions">
