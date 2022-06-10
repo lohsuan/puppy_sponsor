@@ -57,7 +57,7 @@ export const TransactionsProvider = ({ children }) => {
   const getAllPuppies = async () => {
     try {
       if (ethereum) {
-        const availablePuppies = await contract.getAllPuppys()
+        const availablePuppies = await contract.getAllPuppies()
 
         console.log('getAllPuppies', availablePuppies)
 
