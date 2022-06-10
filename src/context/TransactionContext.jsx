@@ -156,6 +156,47 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
+  const donateForPuppy = async (dogId) => {
+    try {
+      if (ethereum) {
+        const { amount, keyword, message } = formData
+        const parsedAmount = ethers.utils.parseEther(amount)
+        const puppiesOwner = await contract.owner()
+
+        await ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [
+            {
+              from: currentAccount,
+              to: puppiesOwner,
+              gas: '0x5208', // need to be hexadecimal (21000 GWei)
+              value: parsedAmount._hex // need to be hexadecimal
+            }
+          ]
+        })
+
+        // add transaction to our contract
+        const transactionHash = await contract.donateForPupppy(dogId, parsedAmount, message, keyword)
+
+        setIsLoading(true)
+        console.log(`Loading - ${transactionHash.hash}`)
+        await transactionHash.wait()
+        console.log(`Success - ${transactionHash.hash}`)
+        setIsLoading(false)
+
+        const transactionsCount = await contract.transactionCount()
+
+        setTransactionCount(transactionsCount.toNumber())
+        window.location.reload()
+      } else {
+        console.log('No ethereum object')
+      }
+    } catch (error) {
+      console.log(error)
+      throw new Error('No ethereum object')
+    }
+  }
+
   useEffect(() => {
     checkIfWalletIsConnect()
     checkIfTransactionsExists()
@@ -171,6 +212,7 @@ export const TransactionsProvider = ({ children }) => {
         currentAccount,
         isLoading,
         donateForFood,
+        donateForPuppy,
         handleChange,
         formData
       }}

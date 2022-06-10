@@ -20,7 +20,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
  * @returns {JSXElement} PuppyCard, with a donate button.
  * */
 const PuppyDetail = () => {
-  const { currentAccount, handleChange, puppies, formData, isLoading, transactions } = useContext(transactionContext)
+  const { handleChange, puppies, donateForPuppy, formData, isLoading, transactions } = useContext(transactionContext)
   const params = useParams();
   const puppy = puppies.find((puppy) => puppy.dogId == params.id);
 
@@ -30,7 +30,7 @@ const PuppyDetail = () => {
 
     if (!amount || !keyword || !message) return
 
-    donateForFood()
+    donateForPuppy(puppy.dogId)
   }
 
   return (
@@ -105,7 +105,7 @@ const PuppyDetail = () => {
               <tr key={i}>
                 <td className="border border-slate-300">{transaction.addressFrom}</td>
                 <td className="border border-slate-300">{transaction.addressTo}</td>
-                <td className="border border-slate-300">{transaction.amount}</td>
+                <td className="border border-slate-300">{transaction.amount} ETH</td>
                 <td className="border border-slate-300">{transaction.message}</td>
                 <td className="border border-slate-300">{transaction.timestamp}</td>
               </tr>
