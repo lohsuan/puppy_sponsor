@@ -31,6 +31,7 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (ethereum) {
         const availableTransactions = await contract.getAllTransactions()
+        console.log('availableTransactions', availableTransactions)
 
         const structuredTransactions = availableTransactions.map((transaction) => ({
           addressTo: transaction.receiver,
@@ -119,23 +120,9 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (ethereum) {
         const { amount, keyword, message } = formData
-        const parsedAmount = ethers.utils.parseEther(amount)
-        const puppiesOwner = await contract.owner()
 
-        await ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [
-            {
-              from: currentAccount,
-              to: puppiesOwner,
-              gas: '0x5208', // need to be hexadecimal (21000 GWei)
-              value: parsedAmount._hex // need to be hexadecimal
-            }
-          ]
-        })
-
-        // add transaction to our contract
-        const transactionHash = await contract.donateForFood(parsedAmount, message, keyword)
+        const options = {value: ethers.utils.parseEther(amount)}
+        const transactionHash = await contract.donateForFood(message, keyword, options);
 
         setIsLoading(true)
         console.log(`Loading - ${transactionHash.hash}`)
@@ -160,23 +147,9 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (ethereum) {
         const { amount, keyword, message } = formData
-        const parsedAmount = ethers.utils.parseEther(amount)
-        const puppiesOwner = await contract.owner()
 
-        await ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [
-            {
-              from: currentAccount,
-              to: puppiesOwner,
-              gas: '0x5208', // need to be hexadecimal (21000 GWei)
-              value: parsedAmount._hex // need to be hexadecimal
-            }
-          ]
-        })
-
-        // add transaction to our contract
-        const transactionHash = await contract.donateForPupppy(dogId, parsedAmount, message, keyword)
+        const options = {value: ethers.utils.parseEther(amount)}
+        const transactionHash = await contract.donateForPuppy(dogId, message, keyword, options);
 
         setIsLoading(true)
         console.log(`Loading - ${transactionHash.hash}`)
