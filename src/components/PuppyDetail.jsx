@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { useParams } from "react-router-dom";
+import { useParams } from 'react-router-dom'
 import { transactionContext } from '../context/TransactionContext'
 import { Loader } from '.'
 
@@ -20,9 +20,10 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
  * @returns {JSXElement} PuppyCard, with a donate button.
  * */
 const PuppyDetail = () => {
-  const { handleChange, puppies, donateForPuppy, formData, isLoading, transactions } = useContext(transactionContext)
-  const params = useParams();
-  const puppy = puppies.find((puppy) => puppy.dogId == params.id);
+  const { handleChange, puppies, donateForPuppy, formData, isLoading, transactions } =
+    useContext(transactionContext)
+  const params = useParams()
+  const puppy = puppies.find((puppy) => puppy.dogId == params.id)
 
   const handleSubmit = (e) => {
     const { amount, keyword, message } = formData
@@ -35,17 +36,19 @@ const PuppyDetail = () => {
 
   return (
     <div className="flex w-full flex-col items-center  justify-center px-5 md:max-w-[70vw] m-auto">
-      {puppy &&
+      {puppy && (
         <h1 className="my-5 text-center text-white text-2xl font-extrabold">{puppy.name}</h1>
-      }
+      )}
       <div className="flex w-full justify-center items-center">
         <div className="flex mf:flex-row flex-col items-center justify-between md:p-8 py-12 px-4">
           <div className="flex flex-1 justify-center items-center flex-col ">
-            {puppy && <img
-              className="my-2 p-5 md:max-h-max md:h-auto object-cover w-auto rounded-t-lg md:rounded-none md:rounded-l-lg"
-              src={puppy.imageUrl}
-              alt="puppyImg"
-            />}
+            {puppy && (
+              <img
+                className="my-2 p-5 md:max-h-max md:h-auto object-cover w-auto rounded-t-lg md:rounded-none md:rounded-l-lg"
+                src={puppy.imageUrl}
+                alt="puppyImg"
+              />
+            )}
           </div>
 
           <div className="flex flex-col flex-1 items-center justify-start w-full mf:mt-0 mt-10">
@@ -93,24 +96,26 @@ const PuppyDetail = () => {
         <thead>
           <tr>
             {['From', 'To', 'Amount', 'Message', 'Transaction Time'].map((v, i) => (
-              <th key={i} className="border border-slate-300">{v}</th>
+              <th key={i} className="border border-slate-300">
+                {v}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {transactions && transactions
-            .filter((x) => x.metaData == params.id)
-            .reverse()
-            .map((transaction, i) =>
-              <tr key={i}>
-                <td className="border border-slate-300">{transaction.addressFrom}</td>
-                <td className="border border-slate-300">{transaction.addressTo}</td>
-                <td className="border border-slate-300">{transaction.amount} ETH</td>
-                <td className="border border-slate-300">{transaction.message}</td>
-                <td className="border border-slate-300">{transaction.timestamp}</td>
-              </tr>
-            )
-          }
+          {transactions &&
+            transactions
+              .filter((x) => x.metaData == params.id)
+              .reverse()
+              .map((transaction, i) => (
+                <tr key={i}>
+                  <td className="border border-slate-300">{transaction.addressFrom}</td>
+                  <td className="border border-slate-300">{transaction.addressTo}</td>
+                  <td className="border border-slate-300">{transaction.amount} ETH</td>
+                  <td className="border border-slate-300">{transaction.message}</td>
+                  <td className="border border-slate-300">{transaction.timestamp}</td>
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>

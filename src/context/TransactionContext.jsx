@@ -121,8 +121,8 @@ export const TransactionsProvider = ({ children }) => {
       if (ethereum) {
         const { amount, keyword, message } = formData
 
-        const options = {value: ethers.utils.parseEther(amount)}
-        const transactionHash = await contract.donateForFood(message, keyword, options);
+        const options = { value: ethers.utils.parseEther(amount) }
+        const transactionHash = await contract.donateForFood(message, keyword, options)
 
         setIsLoading(true)
         console.log(`Loading - ${transactionHash.hash}`)
@@ -148,8 +148,8 @@ export const TransactionsProvider = ({ children }) => {
       if (ethereum) {
         const { amount, keyword, message } = formData
 
-        const options = {value: ethers.utils.parseEther(amount)}
-        const transactionHash = await contract.donateForPuppy(dogId, message, keyword, options);
+        const options = { value: ethers.utils.parseEther(amount) }
+        const transactionHash = await contract.donateForPuppy(dogId, message, keyword, options)
 
         setIsLoading(true)
         console.log(`Loading - ${transactionHash.hash}`)
