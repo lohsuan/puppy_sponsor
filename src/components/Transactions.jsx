@@ -5,7 +5,7 @@ import { transactionContext } from '../context/TransactionContext'
 import useFetchedGiphyImg from '../hooks/useFetchedGiphyImg'
 import { shortenAddress } from '../utils/shortenAddress'
 
-const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword, amount, url }) => {
+const TransactionsCard = ({ addressTo, addressFrom, time, message, keyword, amount, url }) => {
   const gifUrl = useFetchedGiphyImg({ keyword })
 
   return (
@@ -38,7 +38,7 @@ const TransactionsCard = ({ addressTo, addressFrom, timestamp, message, keyword,
           className="w-full h-64 2xl:h-96 rounded-md shadow-lg object-cover"
         />
         <div className="bg-black p-3 px-5 w-max rounded-3xl -mt-5 shadow-2xl">
-          <p className="text-[#37c7da] font-bold">{timestamp}</p>
+          <p className="text-[#37c7da] font-bold">{time}</p>
         </div>
       </div>
     </div>
@@ -60,7 +60,6 @@ const Transactions = (props) => {
         )}
 
         <div className="flex flex-wrap justify-center items-center mt-10">
-          {/* {[...dummyData, ...transactions].reverse().map((transaction, i) => ( */}
           {props.content === 'all'
             ? [...transactions]
                 .reverse()

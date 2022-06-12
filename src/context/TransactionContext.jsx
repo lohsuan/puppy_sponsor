@@ -17,7 +17,7 @@ export const TransactionsProvider = ({ children }) => {
   const [formData, setFormData] = useState({ amount: '', keyword: '', message: '' })
   const [currentAccount, setCurrentAccount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [transactionCount, setTransactionCount] = useState(localStorage.getItem('transactionCount'))
+  const [donateTransactionAmount, setDonateTransactionAmount] = useState(localStorage.getItem('donateTransactionAmount'))
   const [transactions, setTransactions] = useState([])
   const [puppies, setPuppies] = useState([])
 
@@ -30,20 +30,18 @@ export const TransactionsProvider = ({ children }) => {
   const getAllTransactions = async () => {
     try {
       if (ethereum) {
-        const availableTransactions = await contract.getAllTransactions()
+        const availableTransactions = await contract.getAllDonateTransactions()
         console.log('availableTransactions', availableTransactions)
 
         const structuredTransactions = availableTransactions.map((transaction) => ({
+          addressFrom: transaction.donor,
           addressTo: transaction.receiver,
-          addressFrom: transaction.sender,
-          timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
-          message: transaction.message,
-          keyword: transaction.keyword,
           amount: parseInt(transaction.amount._hex) / 10 ** 18,
-          metaData: transaction.metaData
+          time: new Date(transaction.time.toNumber() * 1000).toLocaleString(),
+          puppyId: transaction.puppyId,
+          message: transaction.message,
+          keyword: transaction.keyword
         }))
-
-        console.log('getAllTransactions', structuredTransactions)
 
         setTransactions(structuredTransactions)
       } else {
@@ -59,7 +57,7 @@ export const TransactionsProvider = ({ children }) => {
       if (ethereum) {
         const availablePuppies = await contract.getAllPuppies()
 
-        console.log('getAllPuppies', availablePuppies)
+        console.log('puppies', availablePuppies)
 
         setPuppies(availablePuppies)
       } else {
@@ -75,7 +73,6 @@ export const TransactionsProvider = ({ children }) => {
       if (!ethereum) return alert('Please install MetaMask.')
 
       const accounts = await ethereum.request({ method: 'eth_accounts' })
-      console.log(accounts)
 
       if (accounts.length) {
         setCurrentAccount(accounts[0])
@@ -92,9 +89,9 @@ export const TransactionsProvider = ({ children }) => {
   const checkIfTransactionsExists = async () => {
     try {
       if (ethereum) {
-        const currentTransactionCount = await contract.transactionCount()
+        const currentDonateTransactionAmount = await contract.donateTransactionAmount()
 
-        window.localStorage.setItem('transactionCount', currentTransactionCount)
+        window.localStorage.setItem('donateTransactionAmount', currentDonateTransactionAmount)
       }
     } catch (error) {
       console.log(error)
@@ -130,9 +127,9 @@ export const TransactionsProvider = ({ children }) => {
         console.log(`Success - ${transactionHash.hash}`)
         setIsLoading(false)
 
-        const transactionsCount = await contract.transactionCount()
+        const transactionsCount = await contract.donateTransactionAmount()
 
-        setTransactionCount(transactionsCount.toNumber())
+        setDonateTransactionAmount(transactionsCount.toNumber())
         window.location.reload()
       } else {
         console.log('No ethereum object')
@@ -157,9 +154,9 @@ export const TransactionsProvider = ({ children }) => {
         console.log(`Success - ${transactionHash.hash}`)
         setIsLoading(false)
 
-        const transactionsCount = await contract.transactionCount()
+        const transactionsCount = await contract.donateTransactionAmount()
 
-        setTransactionCount(transactionsCount.toNumber())
+        setDonateTransactionAmount(transactionsCount.toNumber())
         window.location.reload()
       } else {
         console.log('No ethereum object')
@@ -173,12 +170,12 @@ export const TransactionsProvider = ({ children }) => {
   useEffect(() => {
     checkIfWalletIsConnect()
     checkIfTransactionsExists()
-  }, [transactionCount])
+  }, [donateTransactionAmount])
 
   return (
     <transactionContext.Provider
       value={{
-        transactionCount,
+        donateTransactionAmount,
         connectWallet,
         transactions,
         puppies,

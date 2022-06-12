@@ -105,7 +105,7 @@ const PuppyDetail = () => {
         <tbody>
           {transactions &&
             transactions
-              .filter((x) => x.metaData == params.id)
+              .filter((x) => x.puppyId == params.id)
               .reverse()
               .map((transaction, i) => (
                 <tr key={i}>
@@ -113,7 +113,7 @@ const PuppyDetail = () => {
                   <td className="border border-slate-300">{transaction.addressTo}</td>
                   <td className="border border-slate-300">{transaction.amount} ETH</td>
                   <td className="border border-slate-300">{transaction.message}</td>
-                  <td className="border border-slate-300">{transaction.timestamp}</td>
+                  <td className="border border-slate-300">{transaction.time}</td>
                 </tr>
               ))}
         </tbody>

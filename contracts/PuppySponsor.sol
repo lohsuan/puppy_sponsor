@@ -5,6 +5,8 @@ pragma solidity 0.8.14;
 import "./Ownable.sol";
 import "./EnumerableSet.sol";
 
+/// @author NTUT smart contract class - team 9
+/// @title Puppy sponsor: a donation platform for stray puppies
 contract PuppySponsor is Ownable {
     using EnumerableSet for EnumerableSet.Bytes32Set;
 
@@ -16,10 +18,10 @@ contract PuppySponsor is Ownable {
     uint256 public totalReceivedDonation;
 
     // A list that stores historical transaction records.
-    DonateTransaction[] public donateTransactions;
+    DonateTransaction[] donateTransactions;
 
     // A list of puppies that can be donated. Once added, puppies are not allowed to be removed.
-    Puppy[] public puppies;
+    Puppy[] puppies;
 
     // A set to store puppy id.
     EnumerableSet.Bytes32Set private _puppyIdSet;
@@ -173,5 +175,19 @@ contract PuppySponsor is Ownable {
         puppies.push(Puppy(newPuppyId, name, birthday, imageUrl, description));
 
         emit PuppyAdded(newPuppyId, name, birthday, imageUrl, description, block.timestamp);
+    }
+
+    /**
+     * @dev get all puppies.
+     */
+    function getAllPuppies() external view returns (Puppy[] memory) {
+        return puppies;
+    }
+
+    /**
+     * @dev get all donateTransactions.
+     */
+    function getAllDonateTransactions() external view returns (DonateTransaction[] memory) {
+        return donateTransactions;
     }
 }
