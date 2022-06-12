@@ -1,4 +1,4 @@
-import { Navbar, Welcome, Services, Footer, Transactions, Puppies } from './components'
+import { Navbar, Welcome, Services, Footer, Transactions, Puppies, PuppyDetail } from './components'
 import { Routes, Route } from 'react-router-dom'
 
 const App = () => {
@@ -8,8 +8,8 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={[<Welcome key="welcome" />, <Services key="services" />]} />
-          {/* <Route path="services" element={<Services />} /> */}
           <Route path="puppies" element={<Puppies key="puppies" />} />
+          <Route path="puppies/:id" element={<PuppyDetail key="puppyDetail" />} />
           <Route
             path="transactions"
             element={[
@@ -24,9 +24,6 @@ const App = () => {
               <Services key="services" />
             ]}
           />
-          {/* <Welcome /> */}
-          {/* <Services /> */}
-          {/* <Transactions /> */}
         </Routes>
       </div>
       <Footer />

@@ -1,9 +1,8 @@
 import React, { useContext } from 'react'
 import { transactionContext } from '../context/TransactionContext'
+import { Link } from 'react-router-dom'
 
-const PuppyCard = ({ imageUrl, name, birthday, description }) => {
-  const handleDonate = () => {}
-
+const PuppyCard = ({ puppyId, imageUrl, name, birthday, description }) => {
   return (
     <div
       className="bg-[#181918] m-4 flex flex-1 2xl:min-w-[300px] 2xl:max-w-[350px] sm:min-w-[270px] sm:max-w-[300px]
@@ -18,13 +17,11 @@ const PuppyCard = ({ imageUrl, name, birthday, description }) => {
 
         <div className="flex flex-col items-center">
           <img src={imageUrl} alt="dog" />
-          <button
-            type="button"
-            onClick={handleDonate}
-            className="bg-black p-3 px-5 w-max rounded-3xl -translate-y-1/2 shadow-2xl"
-          >
-            <p className="text-[#37c7da] font-bold">Donate to XXX</p>
-          </button>
+          <Link to={'/puppies/' + puppyId}>
+            <div className="bg-[#123338] p-3 px-5 w-max rounded-3xl -translate-y-1/2 shadow-2xl hover:bg-[#16485b]">
+              <p className="text-[#37c7da] font-bold">Donate to XXX</p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>
@@ -46,7 +43,7 @@ const Puppies = () => {
         )}
 
         <div className="flex flex-wrap justify-center items-stretch mt-10">
-          {puppies && puppies.map((transaction, i) => <PuppyCard key={i} {...transaction} />)}
+          {puppies && puppies.map((puppyDetail, i) => <PuppyCard key={i} {...puppyDetail} />)}
         </div>
       </div>
     </div>
