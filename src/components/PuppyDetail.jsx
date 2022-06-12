@@ -36,7 +36,7 @@ const PuppyDetail = () => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center  justify-center px-5 md:max-w-[70vw] m-auto">
+    <div className="flex min-h-screen w-full flex-col items-center  justify-center px-5 md:max-w-[70vw] m-auto">
       {puppy && (
         <h1 className="my-5 text-center text-white text-2xl font-extrabold">{puppy.name}</h1>
       )}
