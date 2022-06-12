@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { transactionContext } from '../context/TransactionContext'
 import { Link } from 'react-router-dom'
 
-const PuppyCard = ({ dogId, imageUrl, name, birthday, description }) => {
+const PuppyCard = ({ puppyId, imageUrl, name, birthday, description }) => {
   return (
     <div
       className="bg-[#181918] m-4 flex flex-1 2xl:min-w-[300px] 2xl:max-w-[350px] sm:min-w-[270px] sm:max-w-[300px]
@@ -17,7 +17,7 @@ const PuppyCard = ({ dogId, imageUrl, name, birthday, description }) => {
 
         <div className="flex flex-col items-center">
           <img src={imageUrl} alt="dog" />
-          <Link to={'/puppies/' + dogId}>
+          <Link to={'/puppies/' + puppyId}>
             <div className="bg-black p-3 px-5 w-max rounded-3xl -translate-y-1/2 shadow-2xl">
               <p className="text-[#37c7da] font-bold">Donate to XXX</p>
             </div>

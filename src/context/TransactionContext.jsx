@@ -140,13 +140,13 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const donateForPuppy = async (dogId) => {
+  const donateForPuppy = async (puppyId) => {
     try {
       if (ethereum) {
         const { amount, keyword, message } = formData
 
         const options = { value: ethers.utils.parseEther(amount) }
-        const transactionHash = await contract.donateForPuppy(dogId, message, keyword, options)
+        const transactionHash = await contract.donateForPuppy(puppyId, message, keyword, options)
 
         setIsLoading(true)
         console.log(`Loading - ${transactionHash.hash}`)

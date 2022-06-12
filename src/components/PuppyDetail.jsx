@@ -23,7 +23,7 @@ const PuppyDetail = () => {
   const { handleChange, puppies, donateForPuppy, formData, isLoading, transactions } =
     useContext(transactionContext)
   const params = useParams()
-  const puppy = puppies.find((puppy) => puppy.dogId == params.id)
+  const puppy = puppies.find((puppy) => puppy.puppyId == params.id)
 
   const handleSubmit = (e) => {
     const { amount, keyword, message } = formData
@@ -31,7 +31,7 @@ const PuppyDetail = () => {
 
     if (!amount || !keyword || !message) return
 
-    donateForPuppy(puppy.dogId)
+    donateForPuppy(puppy.puppyId)
   }
 
   return (
