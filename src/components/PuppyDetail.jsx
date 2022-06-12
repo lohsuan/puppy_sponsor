@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import { transactionContext } from '../context/TransactionContext'
 import { Loader } from '.'
+import { shortenAddress } from '../utils/shortenAddress'
 
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
@@ -92,11 +93,11 @@ const PuppyDetail = () => {
       </div>
 
       {/* list of transaction */}
-      <table className="border-collapse border border-slate-400 text-white w-full">
+      <table className="border-collapse border border-slate-400 text-white w-full my-5">
         <thead>
           <tr>
-            {['From', 'To', 'Amount', 'Message', 'Transaction Time'].map((v, i) => (
-              <th key={i} className="border border-slate-300">
+            {['Donator', 'Receiver', 'Amount', 'Message', 'Transaction Time'].map((v, i) => (
+              <th key={i} className="border border-slate-300 py-2">
                 {v}
               </th>
             ))}
@@ -109,11 +110,27 @@ const PuppyDetail = () => {
               .reverse()
               .map((transaction, i) => (
                 <tr key={i}>
-                  <td className="border border-slate-300">{transaction.addressFrom}</td>
-                  <td className="border border-slate-300">{transaction.addressTo}</td>
-                  <td className="border border-slate-300">{transaction.amount} ETH</td>
-                  <td className="border border-slate-300">{transaction.message}</td>
-                  <td className="border border-slate-300">{transaction.time}</td>
+                  <td className="border border-slate-300 text-center py-1" >
+                    <a
+                      href={`https://ropsten.etherscan.io/address/${transaction.addressFrom}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <p className="text-white text-base hover:text-blue-400">{shortenAddress(transaction.addressFrom)}</p>
+                    </a>
+                  </td>
+                  <td className="border border-slate-300 text-center py-1">
+                    <a
+                      href={`https://ropsten.etherscan.io/address/${transaction.addressTo}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <p className="text-white text-base hover:text-blue-400">{shortenAddress(transaction.addressTo)}</p>
+                    </a>
+                  </td>
+                  <td className="border border-slate-300 text-center py-1">{transaction.amount} ETH</td>
+                  <td className="border border-slate-300 text-center py-1">{transaction.message}</td>
+                  <td className="border border-slate-300 text-center py-1">{transaction.time}</td>
                 </tr>
               ))}
         </tbody>
