@@ -110,13 +110,15 @@ const PuppyDetail = () => {
               .reverse()
               .map((transaction, i) => (
                 <tr key={i}>
-                  <td className="border border-slate-300 text-center py-1" >
+                  <td className="border border-slate-300 text-center py-1">
                     <a
                       href={`https://ropsten.etherscan.io/address/${transaction.addressFrom}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <p className="text-white text-base hover:text-blue-400">{shortenAddress(transaction.addressFrom)}</p>
+                      <p className="text-white text-base hover:text-blue-400">
+                        {shortenAddress(transaction.addressFrom)}
+                      </p>
                     </a>
                   </td>
                   <td className="border border-slate-300 text-center py-1">
@@ -125,11 +127,17 @@ const PuppyDetail = () => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <p className="text-white text-base hover:text-blue-400">{shortenAddress(transaction.addressTo)}</p>
+                      <p className="text-white text-base hover:text-blue-400">
+                        {shortenAddress(transaction.addressTo)}
+                      </p>
                     </a>
                   </td>
-                  <td className="border border-slate-300 text-center py-1">{transaction.amount} ETH</td>
-                  <td className="border border-slate-300 text-center py-1">{transaction.message}</td>
+                  <td className="border border-slate-300 text-center py-1">
+                    {transaction.amount} ETH
+                  </td>
+                  <td className="border border-slate-300 text-center py-1">
+                    {transaction.message}
+                  </td>
                   <td className="border border-slate-300 text-center py-1">{transaction.time}</td>
                 </tr>
               ))}

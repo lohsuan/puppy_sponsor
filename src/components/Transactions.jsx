@@ -20,14 +20,18 @@ const TransactionsCard = ({ addressTo, addressFrom, time, message, keyword, amou
             target="_blank"
             rel="noreferrer"
           >
-            <p className="text-white text-base hover:text-blue-400">From: {shortenAddress(addressFrom)}</p>
+            <p className="text-white text-base hover:text-blue-400">
+              From: {shortenAddress(addressFrom)}
+            </p>
           </a>
           <a
             href={`https://ropsten.etherscan.io/address/${addressTo}`}
             target="_blank"
             rel="noreferrer"
           >
-            <p className="text-white text-base hover:text-blue-400">To: {shortenAddress(addressTo)}</p>
+            <p className="text-white text-base hover:text-blue-400">
+              To: {shortenAddress(addressTo)}
+            </p>
           </a>
           <p className="text-white text-base">Amount: {amount} ETH</p>
           {message && <p className="text-white text-base">Message: {message}</p>}
@@ -62,12 +66,12 @@ const Transactions = (props) => {
         <div className="flex flex-wrap justify-center items-center mt-10">
           {props.content === 'all'
             ? [...transactions]
-              .reverse()
-              .map((transaction, i) => <TransactionsCard key={i} {...transaction} />)
+                .reverse()
+                .map((transaction, i) => <TransactionsCard key={i} {...transaction} />)
             : [...transactions]
-              .filter((x) => x.addressFrom.toLowerCase() === currentAccount)
-              .reverse()
-              .map((transaction, i) => <TransactionsCard key={i} {...transaction} />)}
+                .filter((x) => x.addressFrom.toLowerCase() === currentAccount)
+                .reverse()
+                .map((transaction, i) => <TransactionsCard key={i} {...transaction} />)}
         </div>
       </div>
     </div>

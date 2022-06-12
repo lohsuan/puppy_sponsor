@@ -17,7 +17,9 @@ export const TransactionsProvider = ({ children }) => {
   const [formData, setFormData] = useState({ amount: '', keyword: '', message: '' })
   const [currentAccount, setCurrentAccount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [donateTransactionAmount, setDonateTransactionAmount] = useState(localStorage.getItem('donateTransactionAmount'))
+  const [donateTransactionAmount, setDonateTransactionAmount] = useState(
+    localStorage.getItem('donateTransactionAmount')
+  )
   const [transactions, setTransactions] = useState([])
   const [puppies, setPuppies] = useState([])
 
