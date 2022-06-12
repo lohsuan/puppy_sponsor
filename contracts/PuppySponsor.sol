@@ -148,7 +148,7 @@ contract PuppySponsor is Ownable {
      * - `puppyId` must exist and valid.
      */
     function donateForPuppy(bytes32 puppyId, string calldata message, string calldata keyword) external payable {
-        require(_isValidPuppyId(puppyId));
+        require(_isValidPuppyId(puppyId), "Puppy does not exist.");
         _donate(puppyId, message, keyword);
     }
 
