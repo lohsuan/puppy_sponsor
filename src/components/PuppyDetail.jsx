@@ -24,7 +24,7 @@ const PuppyDetail = () => {
   const { handleChange, puppies, donateForPuppy, formData, isLoading, transactions } =
     useContext(transactionContext)
   const params = useParams()
-  const puppy = puppies.find((puppy) => puppy.puppyId == params.id)
+  const puppy = puppies.find((puppy) => puppy.puppyId === params.id)
 
   const handleSubmit = (e) => {
     const { amount, keyword, message } = formData
@@ -93,56 +93,51 @@ const PuppyDetail = () => {
       </div>
 
       {/* list of transaction */}
-      <table className="border-collapse border border-slate-400 text-white w-full my-5">
-        <thead>
-          <tr>
-            {['Donator', 'Receiver', 'Amount', 'Message', 'Transaction Time'].map((v, i) => (
-              <th key={i} className="border border-slate-300 py-2">
-                {v}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {transactions &&
-            transactions
-              .filter((x) => x.puppyId == params.id)
-              .reverse()
-              .map((transaction, i) => (
-                <tr key={i}>
-                  <td className="border border-slate-300 text-center py-1">
-                    <a
-                      href={`https://ropsten.etherscan.io/address/${transaction.addressFrom}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <p className="text-white text-base hover:text-blue-400">
-                        {shortenAddress(transaction.addressFrom)}
-                      </p>
-                    </a>
-                  </td>
-                  <td className="border border-slate-300 text-center py-1">
-                    <a
-                      href={`https://ropsten.etherscan.io/address/${transaction.addressTo}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <p className="text-white text-base hover:text-blue-400">
-                        {shortenAddress(transaction.addressTo)}
-                      </p>
-                    </a>
-                  </td>
-                  <td className="border border-slate-300 text-center py-1">
-                    {transaction.amount} ETH
-                  </td>
-                  <td className="border border-slate-300 text-center py-1">
-                    {transaction.message}
-                  </td>
-                  <td className="border border-slate-300 text-center py-1">{transaction.time}</td>
-                </tr>
+      <div className="relative overflow-x-auto shadow-md rounded-lg max-w-full m-2">
+        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              {['Donator', 'Amount', 'Message', 'Transaction Time'].map((v, i) => (
+                <th key={i} scope="col" className="px-6 py-3">
+                  {v}
+                </th>
               ))}
-        </tbody>
-      </table>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions &&
+              transactions
+                .filter((x) => x.puppyId === params.id)
+                .reverse()
+                .map((transaction, i) => (
+                  <tr
+                    key={i}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+                    >
+                      <a
+                        href={`https://ropsten.etherscan.io/address/${transaction.addressFrom}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <p className="text-white text-base hover:text-blue-400">
+                          {shortenAddress(transaction.addressFrom)}
+                        </p>
+                      </a>
+                    </th>
+                    <td className="px-6 py-4 text-right">
+                      {transaction.amount} <b className="text-cyan-300 text-xs">ETH</b>
+                    </td>
+                    <td className="px-6 py-4">{transaction.message}</td>
+                    <td className="px-6 py-4">{transaction.time}</td>
+                  </tr>
+                ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
