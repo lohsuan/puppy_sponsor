@@ -12,7 +12,7 @@ const AdminPage = () => {
   const [newPuppyName, setNewPuppyName] = useState('')
   const [newPuppyBirthday, setNewPuppyBirthday] = useState('')
   const [newPuppyDesc, setNewPuppyDesc] = useState('')
-  const [newPuppyImgUrl, setNewPuppyImgUrl] = useState('https://i.imgur.com/V8G7aBN.webp')
+  const [newPuppyImgUrl, setNewPuppyImgUrl] = useState('/default-placeholder.webp')
   const [isProcessing, setIsProcessing] = useState(false)
   const fileUploader = useRef(null)
 
