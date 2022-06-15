@@ -36,7 +36,7 @@ const PuppyDetail = () => {
   }
 
   return (
-    <div className="flex w-full flex-col items-center  justify-center px-5 md:max-w-[70vw] m-auto">
+    <div className="flex min-h-screen w-full flex-col items-center  justify-center px-5 md:max-w-[70vw] m-auto">
       {puppy && (
         <h1 className="my-5 text-center text-white text-2xl font-extrabold">{puppy.name}</h1>
       )}
@@ -94,8 +94,8 @@ const PuppyDetail = () => {
 
       {/* list of transaction */}
       <div className="relative overflow-x-auto shadow-md rounded-lg max-w-full m-2">
-        <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <table className="w-full text-sm text-left text-gray-400">
+          <thead className="text-xs uppercase bg-gray-700 text-gray-400">
             <tr>
               {['Donator', 'Amount', 'Message', 'Transaction Time'].map((v, i) => (
                 <th key={i} scope="col" className="px-6 py-3">
@@ -112,11 +112,11 @@ const PuppyDetail = () => {
                 .map((transaction, i) => (
                   <tr
                     key={i}
-                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    className=" border-b bg-gray-800 border-gray-700 hover:bg-gray-600"
                   >
                     <th
                       scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+                      className="px-6 py-4 font-medium text-white whitespace-nowrap"
                     >
                       <a
                         href={`https://ropsten.etherscan.io/address/${transaction.addressFrom}`}

@@ -3,8 +3,6 @@ import { HiMenuAlt4 } from 'react-icons/hi'
 import { AiOutlineClose } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 
-import logo from '../assets/image/font_logo.png'
-
 const NavBarItem = ({ title, classprops, path }) => (
   <Link to={'/' + path} className={`mx-4 cursor-pointer ${classprops}`}>
     {title}
@@ -18,7 +16,7 @@ const Navbar = () => {
     <nav className="w-full flex md:justify-center justify-between items-center p-4">
       <div className="md:flex-[0.6] flex-nowrap flex-row justify-center items-center">
         <Link to="/">
-          <img src={logo} alt="logo" className="h-16 cursor-pointer" />
+          <img src="/font_logo.png" alt="logo" className="h-16 cursor-pointer" />
         </Link>
       </div>
       <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial">
@@ -26,6 +24,7 @@ const Navbar = () => {
         <NavBarItem title="Puppies" path="puppies" />
         <NavBarItem title="Love Records" path="transactions" />
         <NavBarItem title="My Records" path="my-transactions" />
+        <NavBarItem title="Add Puppy" path="add-puppy" />
       </ul>
       <div className="flex relative">
         {!toggleMenu && (
@@ -54,6 +53,7 @@ const Navbar = () => {
             <NavBarItem title="Puppies" classprops="my-2 text-lg" path="puppies" />
             <NavBarItem title="Love Records" classprops="my-2 text-lg" path="transactions" />
             <NavBarItem title="My Records" classprops="my-2 text-lg" path="my-transactions" />
+            <NavBarItem title="Add Puppy" classprops="my-2 text-lg" path="add-puppy" />
           </ul>
         )}
       </div>

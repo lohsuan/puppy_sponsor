@@ -1,5 +1,14 @@
-import { Navbar, Welcome, Services, Footer, Transactions, Puppies, PuppyDetail } from './components'
-import { Routes, Route } from 'react-router-dom'
+import {
+  AddPuppyPage,
+  Footer,
+  Navbar,
+  Puppies,
+  PuppyDetail,
+  Services,
+  Transactions,
+  Welcome
+} from './components'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 const App = () => {
   return (
@@ -8,6 +17,7 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={[<Welcome key="welcome" />, <Services key="services" />]} />
+          <Route path="*" element={[<Navigate to="/" key="404" />]} />
           <Route path="puppies" element={<Puppies key="puppies" />} />
           <Route path="puppies/:id" element={<PuppyDetail key="puppyDetail" />} />
           <Route
@@ -24,6 +34,8 @@ const App = () => {
               <Services key="services" />
             ]}
           />
+
+          <Route path="add-puppy" element={[<AddPuppyPage key="add-puppy" />]} />
         </Routes>
       </div>
       <Footer />
