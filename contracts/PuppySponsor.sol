@@ -4,6 +4,7 @@ pragma solidity 0.8.14;
 
 import "./Ownable.sol";
 import "./EnumerableSet.sol";
+import "./PuppyToken.sol";
 
 /// @author NTUT smart contract class - team 9
 /// @title Puppy sponsor: a donation platform for stray puppies
@@ -68,6 +69,13 @@ contract PuppySponsor is Ownable {
         string description;
     }
 
+    // Token for Puppy Sponsor point back to donator.
+    PuppyToken _token;
+
+    constructor(address _tokenAddress) {
+        _token = PuppyToken(_tokenAddress);
+    }
+
     /**
      * @dev Compare if the provided string is same.
      * Using keccak256 hash to compare.
@@ -97,7 +105,7 @@ contract PuppySponsor is Ownable {
      *
      */
     function _donate(bytes32 puppyId, string calldata message, string calldata keyword) private {
-        require(msg.value > 0, "The transaction value must be greater than zero!");
+        require(msg.value >= 10 ** 15, "The transaction value must be greater than 0.001 ETH!");
 
         donateTransactionAmount++;
         totalReceivedDonation += msg.value;
@@ -108,6 +116,8 @@ contract PuppySponsor is Ownable {
         donateTransactions.push(newTransaction);
 
         emit Donated(msg.sender, owner(), puppyId, msg.value, block.timestamp);
+
+        _token.transfer(msg.sender, msg.value / 10 ** 15);
     }
 
     /**
