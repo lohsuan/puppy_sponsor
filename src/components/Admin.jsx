@@ -117,19 +117,39 @@ const AdminPage = () => {
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <p className="text-center text-white font-extrabold text-2xl my-5 md:my-2">New Puppy</p>
         <div className="flex flex-col items-center md:flex-row">
-          <img
-            className="my-2 cursor-pointer p-5 border-dashed border-4 border-gray-400 hover:border-amber-300 max-h-40 md:max-h-max md:h-auto object-cover w-auto rounded-t-lg md:w-1/3 md:rounded-none md:rounded-l-lg"
-            src={newPuppyImgUrl}
-            onClick={uploadButtonClicked}
-            alt="newPuppyImg"
-          />
-          <input
-            onInput={onDesireUploadFileChosen}
-            ref={fileUploader}
-            className="hidden"
-            type="file"
-            accept="image/jpeg,image/png,image/gif"
-          />
+          <div className="flex flex-col md:w-1/3 my-2">
+            <img
+              className="md:w-full cursor-pointer p-5 border-dashed border-4 border-gray-400 hover:border-amber-300 max-h-40 md:max-h-max md:h-auto object-cover w-auto rounded-t-lg  md:rounded-none md:rounded-l-lg"
+              src={
+                (isImageUrlStr(newPuppyImgUrl) && newPuppyImgUrl) ||
+                defaultNewPuppyImgPlaceHolderUrl
+              }
+              onClick={uploadButtonClicked}
+              alt="newPuppyImg"
+            />
+            <input
+              onInput={onDesireUploadFileChosen}
+              ref={fileUploader}
+              className="hidden"
+              type="file"
+              accept="image/jpeg,image/png,image/gif"
+            />
+
+            <label
+              htmlFor="custom-image-input"
+              className="block my-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              Or Image Url
+            </label>
+            <input
+              type="text"
+              id="custom-image-input"
+              placeholder="https://"
+              onChange={(el) => setNewPuppyImgUrl(el.target.value)}
+              className="block p-2 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            />
+          </div>
+
           <div className="w-full flex flex-col justify-between p-4 leading-normal">
             <div className="mb-6">
               <label
