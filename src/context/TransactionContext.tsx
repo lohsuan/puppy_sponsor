@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Contract, ethers, providers } from 'ethers'
+import type { Contract, ContractReceipt, ContractTransaction } from 'ethers'
+import { ethers, providers } from 'ethers'
 
 import { contractABI, contractAddress } from '../utils/constants'
 import { useSetState } from 'react-use'
+import Swal from 'sweetalert'
 
 export const transactionContext = React.createContext(undefined, undefined)
 
@@ -12,31 +14,71 @@ declare global {
   }
 }
 
+export type NonEmptyString = Readonly<NonNullable<Exclude<string, ''>>>
+
+export interface NewPuppyInfo {
+  name: NonEmptyString
+  birthday: NonEmptyString
+  imageUrl: NonEmptyString
+  description?: Readonly<string>
+}
+
 const globalWindow: Window = window
 const ethereumProvider = globalWindow.ethereum
 
 const createEthereumContractClient = (): Contract => {
+  if (!ethereumProvider) {
+    Swal({
+      icon: 'info',
+      title: 'Please install MetaMask!'
+    }).then()
+    return
+  }
+
   const provider = new ethers.providers.Web3Provider(ethereumProvider)
   const signer = provider.getSigner()
   return new ethers.Contract(contractAddress, contractABI, signer)
 }
 
+const defaultDonationFormData = { amount: '', keyword: '', message: '' }
+
 export const TransactionsProvider = ({ children }) => {
-  const [formData, setFormData] = useSetState({ amount: '', keyword: '', message: '' })
+  const [donationFormData, setDonationFormData] = useSetState(defaultDonationFormData)
   const [currentAccount, setCurrentAccount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [transactions, setTransactions] = useState([])
   const [puppies, setPuppies] = useState([])
 
-  const [txState, setTxState] = useSetState({})
-
   const contract = createEthereumContractClient()
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>, name: string): void => {
-    setFormData((prevState: typeof formData) => ({ ...prevState, [name]: e.target.value }))
+    setDonationFormData((prevState: typeof donationFormData) => ({
+      ...prevState,
+      [name]: e.target.value
+    }))
   }
 
-  const getAllTransactions = async () => {
+  const updateChainContents = async (): Promise<void> => {
+    await getAllPuppies()
+    await getAllTransactions()
+  }
+
+  const transactionPromise = (transaction: ContractTransaction): Promise<ContractReceipt> => {
+    setIsLoading(true)
+    console.info(`Loading - ${transaction.hash}`)
+
+    const txPromise = transaction.wait()
+
+    txPromise.then(() => {
+      console.info(`Done - ${transaction.hash}`)
+      setDonationFormData(defaultDonationFormData)
+      updateChainContents().then(() => setIsLoading(false))
+    })
+
+    return txPromise
+  }
+
+  const getAllTransactions = async (): Promise<void> => {
     try {
       if (ethereumProvider) {
         const availableTransactions = await contract.getAllDonateTransactions()
@@ -61,7 +103,7 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const getAllPuppies = async () => {
+  const getAllPuppies = async (): Promise<void> => {
     try {
       if (ethereumProvider) {
         const availablePuppies = await contract.getAllPuppies()
@@ -77,16 +119,21 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const checkIfWalletIsConnect = async () => {
+  const checkIfWalletIsConnect = async (): Promise<void> => {
     try {
-      if (!ethereumProvider) return alert('Please install MetaMask.')
+      if (!ethereumProvider) {
+        await Swal({
+          icon: 'info',
+          title: 'Please install MetaMask!'
+        })
+        return
+      }
 
       const accounts = await ethereumProvider.request({ method: 'eth_accounts' })
 
       if (accounts.length) {
         setCurrentAccount(accounts[0])
-        await getAllPuppies()
-        await getAllTransactions()
+        await updateChainContents()
       } else {
         console.info('No accounts found')
       }
@@ -95,34 +142,37 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const connectWallet = async () => {
+  const connectWallet = async (): Promise<void> => {
     try {
-      if (!ethereumProvider) return alert('Please install MetaMask.')
+      if (!ethereumProvider) {
+        await Swal({
+          icon: 'info',
+          title: 'Please install MetaMask!'
+        })
+        return
+      }
 
       const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
 
       setCurrentAccount(accounts[0])
-      setTxState(() => {})
     } catch (error) {
       console.warn('No ethereum object', error)
     }
   }
 
-  const donateForFood = async () => {
+  const donateForFood = async (): Promise<ContractReceipt> => {
+    if (isLoading) {
+      return
+    }
+
     try {
       if (ethereumProvider) {
-        const { amount, keyword, message } = formData
+        const { amount, keyword, message } = donationFormData
 
         const options = { value: ethers.utils.parseEther(amount) }
-        const transactionHash = await contract.donateForFood(message, keyword, options)
+        const contractTx = await contract.donateForFood(message, keyword, options)
 
-        setIsLoading(true)
-        console.info(`Loading - ${transactionHash.hash}`)
-        await transactionHash.wait()
-        console.info(`Success - ${transactionHash.hash}`)
-        setIsLoading(false)
-
-        setTxState(() => {})
+        return transactionPromise(contractTx)
       } else {
         console.info('No ethereum object')
       }
@@ -131,32 +181,54 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const donateForPuppy = async (puppyId) => {
+  const donateForPuppy = async (puppyId): Promise<ContractReceipt> => {
+    if (isLoading) {
+      return
+    }
+
     try {
       if (ethereumProvider) {
-        const { amount, keyword, message } = formData
+        const { amount, keyword, message } = donationFormData
 
         const options = { value: ethers.utils.parseEther(amount) }
-        const transactionHash = await contract.donateForPuppy(puppyId, message, keyword, options)
+        const contractTx = await contract.donateForPuppy(puppyId, message, keyword, options)
 
-        setIsLoading(true)
-        console.info(`Loading - ${transactionHash.hash}`)
-        await transactionHash.wait()
-        console.info(`Success - ${transactionHash.hash}`)
-        setIsLoading(false)
-
-        setTxState(() => {})
+        return transactionPromise(contractTx)
       } else {
         console.info('No ethereum object')
       }
     } catch (error) {
       console.warn('No ethereum object', error)
+    }
+  }
+
+  const createNewPuppy = async (newPuppyInfo: NewPuppyInfo): Promise<ContractReceipt> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      const contractTx = await contract.createNewPuppy(
+        newPuppyInfo.name,
+        newPuppyInfo.birthday,
+        newPuppyInfo.imageUrl,
+        newPuppyInfo.description
+      )
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      console.warn('An error occurred during createNewPuppy', e)
     }
   }
 
   useEffect(() => {
     checkIfWalletIsConnect().then()
-  }, [txState])
+  }, [])
 
   return (
     <transactionContext.Provider
@@ -168,8 +240,9 @@ export const TransactionsProvider = ({ children }) => {
         isLoading,
         donateForFood,
         donateForPuppy,
+        createNewPuppy,
         handleChange,
-        formData
+        formData: donationFormData
       }}
     >
       {children}
