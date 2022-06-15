@@ -1,6 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import Datepicker from 'flowbite-datepicker/Datepicker'
-import { isImageFile, uploadMedia } from '../utils/img'
+import React, { useContext, useRef, useState } from 'react'
+import { isImageFile, isImageUrlStr, uploadMedia } from '../utils/img'
+import { isValidDateStr } from '../utils/date'
+import { useDebounce, useToggle } from 'react-use'
+import { transactionContext } from '../context/TransactionContext'
+import Swal from 'sweetalert'
 
 /**
  * Content management pages for third-party agencies.
@@ -9,18 +12,30 @@ import { isImageFile, uploadMedia } from '../utils/img'
  * @returns {JSXElement} The AdminPage Component.
  * */
 const AdminPage = () => {
+  const defaultNewPuppyImgPlaceHolderUrl = '/default-placeholder.webp'
+
+  const { createNewPuppy } = useContext(transactionContext)
+
   const [newPuppyName, setNewPuppyName] = useState('')
   const [newPuppyBirthday, setNewPuppyBirthday] = useState('')
   const [newPuppyDesc, setNewPuppyDesc] = useState('')
-  const [newPuppyImgUrl, setNewPuppyImgUrl] = useState('/default-placeholder.webp')
-  const [isProcessing, setIsProcessing] = useState(false)
+  const [newPuppyImgUrl, setNewPuppyImgUrl] = useState(defaultNewPuppyImgPlaceHolderUrl)
+  const [isProcessing, setIsProcessing] = useToggle(false)
+  const [isFormValid, setIsFormValid] = useToggle(false)
+
   const fileUploader = useRef(null)
 
-  const setupDatePickers = useCallback(() => {
-    // TODO: inspect why DatePicket's style could not be applied.
-    const datepickerEl = document.getElementById('new-puppy-date-picker')
-    new Datepicker(datepickerEl)
-  }, [])
+  useDebounce(
+    () =>
+      setIsFormValid(
+        newPuppyName.trim() !== '' &&
+          newPuppyImgUrl !== defaultNewPuppyImgPlaceHolderUrl &&
+          isImageUrlStr(newPuppyImgUrl) &&
+          isValidDateStr(newPuppyBirthday)
+      ),
+    300,
+    [newPuppyName, newPuppyImgUrl, newPuppyBirthday]
+  )
 
   const uploadButtonClicked = () => {
     if (isProcessing) {
@@ -49,18 +64,53 @@ const AdminPage = () => {
 
     if (url) {
       setNewPuppyImgUrl(url)
+    } else {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Can not upload image, QAQ'
+      })
     }
   }
 
-  const onCreatePuppyClicked = () => {
+  const onCreatePuppyClicked = async () => {
     if (isProcessing) {
       return
     }
-  }
 
-  useEffect(() => {
-    // setupDatePickers()
-  }, [])
+    if (!isFormValid) {
+      await Swal({
+        icon: 'info',
+        title: 'Some info seems not correct!',
+        text: 'Please check your inputs and try again'
+      })
+      return
+    }
+
+    setIsProcessing(true)
+    const ok = await createNewPuppy({
+      name: newPuppyName,
+      birthday: newPuppyBirthday,
+      imageUrl: newPuppyImgUrl,
+      description: newPuppyDesc
+    })
+
+    if (!ok) {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      })
+    } else {
+      await Swal({
+        icon: 'success',
+        title: 'Nice!',
+        text: 'Puppy has been created.'
+      })
+    }
+
+    setIsProcessing(false)
+  }
 
   return (
     <div className="min-h-screen">
@@ -93,7 +143,9 @@ const AdminPage = () => {
                 id="new-puppy-name"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="My lovely dog :)"
-                onChange={(el) => setNewPuppyName(el.target.value)}
+                onChange={(el) => {
+                  setNewPuppyName(el.target.value)
+                }}
                 required
               />
             </div>
@@ -124,7 +176,9 @@ const AdminPage = () => {
                   type="text"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Select date"
-                  onChange={(el) => setNewPuppyBirthday(el.target.value)}
+                  onChange={(el) => {
+                    setNewPuppyBirthday(el.target.value)
+                  }}
                 />
               </div>
             </div>
@@ -148,7 +202,7 @@ const AdminPage = () => {
             <div className="flex items-start mb-6">
               <button
                 type="button"
-                disabled={isProcessing || newPuppyName.trim() === ''}
+                disabled={isProcessing || !isFormValid}
                 onClick={onCreatePuppyClicked}
                 className="text-white disabled:bg-gray-400 disabled:opacity-20 bg-[#FF9119] enabled:hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center enabled:dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 mr-2 mb-2"
               >
