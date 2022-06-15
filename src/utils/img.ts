@@ -51,3 +51,20 @@ export const uploadMedia = async (
     return errorResolver(e)
   }
 }
+
+const imgUrlRegex = /^https:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)$/
+
+export const isImageUrlStr = (urlStr: string): boolean => {
+  const expectUrlStr = urlStr.trim()
+
+  if (expectUrlStr === '' || !expectUrlStr.match(imgUrlRegex)) {
+    return false
+  }
+
+  try {
+    new URL(expectUrlStr)
+    return true
+  } catch (e) {
+    return false
+  }
+}
