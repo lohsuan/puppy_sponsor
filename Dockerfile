@@ -6,7 +6,7 @@ COPY ./ $WORKPLACE
 
 WORKDIR $WORKPLACE
 
-RUN npm i -g pnpm serve && \
+RUN npm i -g pnpm@6 serve && \
     pnpm setup && \
     pnpm i --frozen-lockfile &&  \
     pnpm build
