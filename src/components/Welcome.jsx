@@ -14,7 +14,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
     placeholder={placeholder}
     type={type}
-    step="0.0001"
+    step="0.001"
     value={value}
     onChange={(e) => handleChange(e, name)}
     className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm"
@@ -47,7 +47,7 @@ const Welcome = () => {
             Send your love easily on Puppy Sponsor accross the world.
           </p>
           <p className="text-left mt-5 text-[#9393FF] md:w-9/12 w-11/12 text-base">
-            Help us to buy food for them. <br /> 0.0001 ETH = 10 bags of foods
+            Help us to buy food for them. <br /> 0.01 ETH = 2 bags of foods = 10 PUPPY TOKEN
           </p>
           {!currentAccount && (
             <button
@@ -91,7 +91,7 @@ const Welcome = () => {
           {/* input holder */}
           <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center blue-glassmorphism">
             <Input
-              placeholder="Amount (ETH)"
+              placeholder="Amount (>= 0.001 ETH)"
               name="amount"
               type="number"
               handleChange={handleChange}
