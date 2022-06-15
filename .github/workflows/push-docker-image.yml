@@ -32,6 +32,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@main
+        
+      - name: Add puppy sponsor cofigs
+        run: echo '${{ PUPPY_SPONSOR_ENV }}' > ./.env
 
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
