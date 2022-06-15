@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react'
 import { isImageFile, isImageUrlStr, uploadMedia } from '../utils/img'
 import { isValidDateStr } from '../utils/date'
 import { useDebounce, useToggle } from 'react-use'
@@ -14,7 +14,17 @@ import Swal from 'sweetalert'
 const AddPuppyPage = () => {
   const defaultNewPuppyImgPlaceHolderUrl = '/default-placeholder.webp'
 
-  const { createNewPuppy } = useContext(transactionContext)
+  const { createNewPuppy, owner, currentAccount } = useContext(transactionContext)
+
+  owner().then((_owner) => {
+    if (currentAccount !== _owner) {
+      Swal({
+        icon: 'error',
+        title: 'You are not able to add any puppy',
+        text: 'Please login as the foundation owner and try again' + _owner
+      }).then()
+    }
+  })
 
   const [newPuppyName, setNewPuppyName] = useState('')
   const [newPuppyBirthday, setNewPuppyBirthday] = useState('')

@@ -103,6 +103,10 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
+  const owner = async (): Promise<string> => {
+    return (await contract.owner()).toLowerCase()
+  }
+
   const getAllPuppies = async (): Promise<void> => {
     try {
       if (ethereumProvider) {
@@ -154,7 +158,7 @@ export const TransactionsProvider = ({ children }) => {
 
       const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
 
-      setCurrentAccount(accounts[0])
+      setCurrentAccount(accounts[0].toLowerCase())
     } catch (error) {
       console.warn('No ethereum object', error)
     }
@@ -242,6 +246,7 @@ export const TransactionsProvider = ({ children }) => {
         donateForPuppy,
         createNewPuppy,
         handleChange,
+        owner,
         formData: donationFormData
       }}
     >
