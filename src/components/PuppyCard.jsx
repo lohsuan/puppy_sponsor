@@ -30,7 +30,7 @@ export const PuppyCard = ({ puppyId, imageUrl, name, birthday, description }) =>
           <img src={imageUrl} alt="dog" />
           <Link to={'/puppies/' + puppyId}>
             <div className="bg-[#123338] p-3 px-5 w-max rounded-3xl -translate-y-1/2 shadow-2xl hover:bg-[#16485b]">
-              <p className="text-[#37c7da] font-bold">Donate to XXX</p>
+              <p className="text-[#37c7da] font-bold">Donate to {name}</p>
             </div>
           </Link>
         </div>
