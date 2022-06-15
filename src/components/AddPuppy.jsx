@@ -117,9 +117,9 @@ const AddPuppyPage = () => {
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <p className="text-center text-white font-extrabold text-2xl my-5 md:my-2">New Puppy</p>
         <div className="flex flex-col items-center md:flex-row">
-          <div className="flex flex-col md:w-1/3 my-2">
+          <div className="flex flex-col h-auto w-1/3 my-2">
             <img
-              className="md:w-full cursor-pointer p-5 border-dashed border-4 border-gray-400 hover:border-amber-300 max-h-40 md:max-h-max md:h-auto object-cover w-auto rounded-t-lg  md:rounded-none md:rounded-l-lg"
+              className="md:w-full cursor-pointer p-5 border-dashed border-4 border-gray-400 hover:border-amber-300 object-cover w-auto rounded-t-lg  md:rounded-none md:rounded-l-lg"
               src={
                 (isImageUrlStr(newPuppyImgUrl) && newPuppyImgUrl) ||
                 defaultNewPuppyImgPlaceHolderUrl
