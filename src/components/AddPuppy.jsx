@@ -11,7 +11,7 @@ import Swal from 'sweetalert'
  *
  * @returns {JSXElement} The AdminPage Component.
  * */
-const AdminPage = () => {
+const AddPuppyPage = () => {
   const defaultNewPuppyImgPlaceHolderUrl = '/default-placeholder.webp'
 
   const { createNewPuppy } = useContext(transactionContext)
@@ -251,4 +251,4 @@ const AdminPage = () => {
   )
 }
 
-export default AdminPage
+export default AddPuppyPage

@@ -1,6 +1,14 @@
-import { Navbar, Welcome, Services, Footer, Transactions, Puppies, PuppyDetail } from './components'
+import {
+  Navbar,
+  Welcome,
+  Services,
+  Footer,
+  Transactions,
+  Puppies,
+  PuppyDetail,
+  AddPuppyPage
+} from './components'
 import { Routes, Route } from 'react-router-dom'
-import Admin from './components/Admin'
 
 const App = () => {
   return (
@@ -25,7 +33,7 @@ const App = () => {
               <Services key="services" />
             ]}
           />
-          <Route path="admin" element={<Admin key="admin-page" />} />
+          <Route path="add-puppy" element={<AddPuppyPage key="add-puppy" />} />
         </Routes>
       </div>
       <Footer />
