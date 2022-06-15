@@ -20,8 +20,8 @@ const AddPuppyPage = () => {
     if (currentAccount !== _owner) {
       Swal({
         icon: 'error',
-        title: 'You are not able to add any puppy',
-        text: 'Please login as the foundation owner and try again' + _owner
+        title: 'You are not able to add puppy',
+        text: 'Transaction will fail since you are not owner.\nPlease login as the foundation owner and try again.'
       }).then()
     }
   })
