@@ -108,7 +108,7 @@ contract PuppyToken is IERC20, Ownable {
      * - the caller must have a balance of at least `amount`.
      */
     function transfer(address to, uint256 amount) public override returns (bool) {
-        address owner = msg.sender;
+        address owner = _msgSender();
         _transfer(owner, to, amount);
         return true;
     }
@@ -139,7 +139,7 @@ contract PuppyToken is IERC20, Ownable {
      * - `spender` cannot be the zero address.
      */
     function approve(address spender, uint256 amount) public override returns (bool) {
-        address owner = msg.sender;
+        address owner = _msgSender();
         _approve(owner, spender, amount);
         return true;
     }
@@ -185,7 +185,7 @@ contract PuppyToken is IERC20, Ownable {
      * - `spender` cannot be the zero address.
      */
     function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
-        address owner = msg.sender;
+        address owner = _msgSender();
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
@@ -205,9 +205,10 @@ contract PuppyToken is IERC20, Ownable {
      * `subtractedValue`.
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
-        address owner = msg.sender;
+        address owner = _msgSender();
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "PuppyToken: decreased allowance below zero");
+
         unchecked {
             _approve(owner, spender, currentAllowance - subtractedValue);
         }
