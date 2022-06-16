@@ -69,7 +69,7 @@ contract PuppySponsor is Ownable {
         string description;
     }
 
-    // Token for Puppy Sponsor point back to donator.
+    // Token for Puppy Sponsor gives back to the donor.
     PuppyToken _token;
 
     constructor(address _tokenAddress) {
@@ -99,9 +99,10 @@ contract PuppySponsor is Ownable {
      * @dev donate for puppy or food.
      * Requirements:
      *
-     * - `msg.value` must be greater than zero.
+     * - `msg.value` must be greater than 10 ** 15 (0.001ETH).
      *
      * Emits a {Donated} event to record the new donation.
+     * Give back 1 PUPPY per 0.001 ETH to the donor.
      *
      */
     function _donate(bytes32 puppyId, string calldata message, string calldata keyword) private {
