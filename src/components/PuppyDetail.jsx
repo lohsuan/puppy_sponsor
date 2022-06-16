@@ -110,14 +110,8 @@ const PuppyDetail = () => {
                 .filter((x) => x.puppyId === params.id)
                 .reverse()
                 .map((transaction, i) => (
-                  <tr
-                    key={i}
-                    className=" border-b bg-gray-800 border-gray-700 hover:bg-gray-600"
-                  >
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-white whitespace-nowrap"
-                    >
+                  <tr key={i} className=" border-b bg-gray-800 border-gray-700 hover:bg-gray-600">
+                    <th scope="row" className="px-6 py-4 font-medium text-white whitespace-nowrap">
                       <a
                         href={`https://ropsten.etherscan.io/address/${transaction.addressFrom}`}
                         target="_blank"
