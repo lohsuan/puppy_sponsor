@@ -21,6 +21,24 @@ const Services = () => (
         <p className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base">
           Offer you convenient, transparent and rapid services to donate safely around the world.
         </p>
+        <a
+          href={`https://ropsten.etherscan.io/address/0x7fdFE5Baf61aEe72A1B60Af76f6a50d6d4953098`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <p className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base hover:text-blue-400">
+            Contract address: 0x7fdFE5Baf61aEe72A1B60Af76f6a50d6d4953098
+          </p>
+        </a>
+        <a
+          href={`https://ropsten.etherscan.io/address/0xFD63AC01eb9D85a5fbdB5E669BE4D7CA7136f29d`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <p className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base hover:text-blue-400">
+            Token address: 0xFD63AC01eb9D85a5fbdB5E669BE4D7CA7136f29d
+          </p>
+        </a>
       </div>
 
       <div className="flex-1 flex flex-col justify-start items-center">
