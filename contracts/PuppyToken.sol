@@ -7,10 +7,10 @@ import "./Ownable.sol";
 /** 
  * @dev this contract implement {IERC20} interface (define in EIT)
  *
- * token 發行量無上限，totalSupply 代表已經發出去(鑄造)多少 token
- * deploy 時將 mint 10000000000 token 給 deploy 的人管理(_owner)
- * 總 supply 數量在 deploy 時固定(Fixed Supply = 10000000000)，
- * owner 可透過 mint function 再增加、burn function 再銷毀特定 address 的 token
+ * The total quantity of this token has no upper limit, totalSupply represents how many tokens have been sent (minted)
+ * When deploying, mint 10000000000 tokens to the contract owner (the person who deploys this contract)
+ * The total quantity of this token is fixed when this contract is deployed (Fixed Supply = 10000000000)
+ * Only the owner can mint tokens, and burn the tokens of a specific address
  */
  
 /// @author NTUT smart contract class - team 9
@@ -25,7 +25,7 @@ contract PuppyToken is IERC20, Ownable {
     /**
      * @dev Owner of account approves the transfer of an amount to another account.
      */
-    mapping(address => mapping(address => uint256)) private _allowances; // authorizer => (authorizer's EOA => authorized amount)
+    mapping(address => mapping(address => uint256)) private _allowances; // authorizer => (authorized EOA => authorized amount)
 
     /**
      * @dev Amount of tokens in existence
