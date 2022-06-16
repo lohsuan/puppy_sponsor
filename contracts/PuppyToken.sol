@@ -31,18 +31,26 @@ contract PuppyToken is IERC20, Ownable {
     /**
      * @dev Amount of tokens in existence
      */
-    uint256 public totalSupply; 
+    uint256 private _totalSupply;
 
     string public constant name = "Puppy Token";
     string public constant symbol = "PUPPY";
     uint8 public constant decimals = 0;
 
     uint64 private constant initialMintAmount = 10 ** 10;
+
     /**
      * @dev This contract will mint `initialMintAmount` tokens to the deployer when deploying.
      */
     constructor() {
         _mint(_msgSender(), initialMintAmount);
+    }
+
+    /**
+     * @dev Returns the amount of tokens in existence.
+     */
+    function totalSupply() external view returns (uint256) {
+        return _totalSupply;
     }
 
     /**
