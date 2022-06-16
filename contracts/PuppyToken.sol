@@ -3,6 +3,7 @@ pragma solidity 0.8.14;
 
 import "./IERC20.sol";
 import "./Ownable.sol";
+import "./EnumerableMap.sol";
 
 /**
  * @dev this contract implement {IERC20} interface (define in EIT)
@@ -12,15 +13,16 @@ import "./Ownable.sol";
  * The total quantity of this token is fixed when this contract is deployed (Fixed Supply = 10000000000)
  * Only the owner can mint tokens, and burn the tokens of a specific address
  */
- 
+
 /// @author NTUT smart contract class - team 9
 /// @title Puppy token: a ERC20 contract as Puppy Sponsor's token
 contract PuppyToken is IERC20, Ownable {
- 
+    using EnumerableMap for EnumerableMap.AddressToUintMap;
+
     /**
      * @dev Balances for each account
      */
-    mapping(address => uint256) private _balances;
+    EnumerableMap.AddressToUintMap private _balances;
 
     /**
      * @dev Owner of account approves the transfer of an amount to another account.
@@ -72,24 +74,25 @@ contract PuppyToken is IERC20, Ownable {
      */
     function burn(address account, uint256 amount) public onlyOwner {
         require(account != address(0), "PuppyToken: burn from the zero address");
-        require(totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
-        uint256 accountBalance = _balances[account];
+        require(_totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
+
+        uint256 accountBalance = _balances.get(account);
         require(accountBalance >= amount, "PuppyToken: burn amount exceeds the balance of account");
 
-        require(totalSupply - amount <  totalSupply, "PuppyToken: burn overflow");
-        require(accountBalance - amount <  accountBalance, "PuppyToken: burn overflow");
+        require(_totalSupply - amount < _totalSupply, "PuppyToken: burn overflow");
+        require(accountBalance - amount < accountBalance, "PuppyToken: burn overflow");
 
-        _balances[account] -= amount;
-        totalSupply -= amount;
+        _balances.set(account, accountBalance - amount);
+        _totalSupply -= amount;
 
         emit Transfer(account, address(0), amount);
     }
- 
+
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
     function balanceOf(address account) public view override returns (uint256) {
-        return _balances[account];
+        return _balances.get(account);
     }
 
     /**
@@ -118,7 +121,7 @@ contract PuppyToken is IERC20, Ownable {
      * This value changes when {approve} or {transferFrom} are called.
      */
     function allowance(address owner, address spender) public view override returns (uint256) {
-        return _allowances[owner][spender];
+        return _allowances[owner].get(spender);
     }
 
     /**
@@ -226,8 +229,10 @@ contract PuppyToken is IERC20, Ownable {
         require(account != address(0), "PuppyToken: mint to the zero address");
         require(account == address(account), "PuppyToken: mint to the invalid address");
 
-        totalSupply += amount;
-        _balances[account] += amount;
+        _totalSupply += amount;
+
+        uint256 currentBalance = _balances.get(account);
+        _balances.set(account, currentBalance + amount);
 
         emit Transfer(address(0), account, amount);
     }
@@ -253,17 +258,17 @@ contract PuppyToken is IERC20, Ownable {
     ) private {
         require(from != address(0), "PuppyToken: transfer from the zero address");
         require(to != address(0), "PuppyToken: transfer to the zero address");
-        
-        uint256 balanceFrom = _balances[from];
-        uint256 balanceTo = _balances[to];
+
+        uint256 balanceFrom = _balances.get(from);
+        uint256 balanceTo = _balances.get(to);
 
         require(balanceFrom >= amount, "PuppyToken: transfer amount exceeds balance");
-        
+
         require(balanceTo + amount > balanceTo, "PuppyToken: transfer overflow");
         require(balanceFrom - amount < balanceFrom, "PuppyToken: transfer overflow");
 
-        _balances[from] -= amount;
-        _balances[to] += amount;
+        _balances.set(from, balanceFrom - amount);
+        _balances.set(to, balanceTo + amount);
 
         emit Transfer(from, to, amount);
     }
@@ -289,10 +294,9 @@ contract PuppyToken is IERC20, Ownable {
         require(owner != address(0), "PuppyToken: approve from the zero address");
         require(spender != address(0), "PuppyToken: approve to the zero address");
 
-        _allowances[owner][spender] = amount;
+        _allowances[owner].set(spender, amount);
         emit Approval(owner, spender, amount);
     }
-    
 
     /**
      * @dev Updates `owner` s allowance for `spender` based on spent `amount`.
