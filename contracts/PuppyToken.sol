@@ -37,11 +37,12 @@ contract PuppyToken is IERC20, Ownable {
     string public constant symbol = "PUPPY";
     uint8 public constant decimals = 0;
 
+    uint64 private constant initialMintAmount = 10 ** 10;
     /**
-     * @dev This contract will mint 10000000000 token to the person who deploys when deploying
+     * @dev This contract will mint `initialMintAmount` tokens to the deployer when deploying.
      */
     constructor() {
-        _mint(msg.sender, 10000000000);
+        _mint(_msgSender(), initialMintAmount);
     }
 
     /**
