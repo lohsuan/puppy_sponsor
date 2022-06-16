@@ -217,10 +217,14 @@ contract PuppyToken is IERC20, Ownable {
     ) private {
         require(from != address(0), "PuppyToken: transfer from the zero address");
         require(to != address(0), "PuppyToken: transfer to the zero address");
-        require(_balances[from] >= amount, "PuppyToken: transfer amount exceeds balance");
         
-        require(_balances[to] + amount > _balances[to], "PuppyToken: transfer overflow");
-        require(_balances[from] - amount < _balances[from], "PuppyToken: transfer overflow");
+        uint256 balanceFrom = _balances[from];
+        uint256 balanceTo = _balances[to];
+
+        require(balanceFrom >= amount, "PuppyToken: transfer amount exceeds balance");
+        
+        require(balanceTo + amount > balanceTo, "PuppyToken: transfer overflow");
+        require(balanceFrom - amount < balanceFrom, "PuppyToken: transfer overflow");
 
         _balances[from] -= amount;
         _balances[to] += amount;
