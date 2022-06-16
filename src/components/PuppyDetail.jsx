@@ -8,7 +8,7 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
     placeholder={placeholder}
     type={type}
-    step="0.0001"
+    step="0.001"
     value={value}
     onChange={(e) => handleChange(e, name)}
     className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
@@ -56,7 +56,7 @@ const PuppyDetail = () => {
             {/* input holder */}
             <div className="p-5 sm:w-96 w-full flex flex-col justify-start items-center">
               <Input
-                placeholder="Amount (ETH)"
+                placeholder="Amount (>= 0.001 ETH)"
                 name="amount"
                 type="number"
                 handleChange={handleChange}
