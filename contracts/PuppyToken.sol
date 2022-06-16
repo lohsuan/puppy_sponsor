@@ -77,16 +77,16 @@ contract PuppyToken is IERC20, Ownable {
      * Requirements:
      *
      * - `account` cannot be the zero address.
-     * - `account` must have at least `amount` tokens.
+     * - `account` and `totalSupply` must have at least `amount` tokens.
      */
     function burn(address account, uint256 amount) public virtual onlyOwner {
         require(account != address(0), "ERC20: burn from the zero address");
+        require(totalSupply >= amount, "ERC20: burn amount exceeds the total supply");
+        require(_balances[account] >= amount, "ERC20: burn amount exceeds the balance of account");
+        require(totalSupply - amount <  totalSupply, "ERC20: overflow error");
+        require(_balances[account] - amount <  _balances[account], "ERC20: overflow error");
 
-        uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
-        unchecked {
-            _balances[account] = accountBalance - amount;
-        }
+        _balances[account] -= amount;
         totalSupply -= amount;
 
         emit Transfer(account, address(0), amount);
