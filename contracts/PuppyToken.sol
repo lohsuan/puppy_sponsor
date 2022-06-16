@@ -61,8 +61,8 @@ contract PuppyToken is IERC20, Ownable {
      * - `account` cannot be the zero address.
      */
     function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "ERC20: mint to the zero address");
-        require(account == address(account), "ERC20: mint to the invalid address");
+        require(account != address(0), "PuppyToken: mint to the zero address");
+        require(account == address(account), "PuppyToken: mint to the invalid address");
 
         totalSupply += amount;
         _balances[account] += amount;
@@ -80,11 +80,11 @@ contract PuppyToken is IERC20, Ownable {
      * - `account` and `totalSupply` must have at least `amount` tokens.
      */
     function burn(address account, uint256 amount) public virtual onlyOwner {
-        require(account != address(0), "ERC20: burn from the zero address");
-        require(totalSupply >= amount, "ERC20: burn amount exceeds the total supply");
-        require(_balances[account] >= amount, "ERC20: burn amount exceeds the balance of account");
-        require(totalSupply - amount <  totalSupply, "ERC20: overflow error");
-        require(_balances[account] - amount <  _balances[account], "ERC20: overflow error");
+        require(account != address(0), "PuppyToken: burn from the zero address");
+        require(totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
+        require(_balances[account] >= amount, "PuppyToken: burn amount exceeds the balance of account");
+        require(totalSupply - amount <  totalSupply, "PuppyToken: overflow error");
+        require(_balances[account] - amount <  _balances[account], "PuppyToken: overflow error");
 
         _balances[account] -= amount;
         totalSupply -= amount;
@@ -183,7 +183,7 @@ contract PuppyToken is IERC20, Ownable {
     function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
         address owner = msg.sender;
         uint256 currentAllowance = allowance(owner, spender);
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        require(currentAllowance >= subtractedValue, "PuppyToken: decreased allowance below zero");
         unchecked {
             _approve(owner, spender, currentAllowance - subtractedValue);
         }
@@ -210,13 +210,13 @@ contract PuppyToken is IERC20, Ownable {
         address to,
         uint256 amount
     ) internal virtual {
-        require(from != address(0), "ERC20: transfer from the zero address");
-        require(to != address(0), "ERC20: transfer to the zero address");
+        require(from != address(0), "PuppyToken: transfer from the zero address");
+        require(to != address(0), "PuppyToken: transfer to the zero address");
 
         uint256 fromBalance = _balances[from];
-        require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        require(fromBalance >= amount, "PuppyToken: transfer amount exceeds balance");
         
-        require(_balances[to] + amount > _balances[to], "ERC20: transfer overflow"); // overflow check
+        require(_balances[to] + amount > _balances[to], "PuppyToken: transfer overflow"); // overflow check
 
         unchecked {     // 溢出會返回"截斷"的结果，若不使用unchecked 則會拋出異常
             _balances[from] = fromBalance - amount;
@@ -244,8 +244,8 @@ contract PuppyToken is IERC20, Ownable {
         address spender,
         uint256 amount
     ) internal virtual {
-        require(owner != address(0), "ERC20: approve from the zero address");
-        require(spender != address(0), "ERC20: approve to the zero address");
+        require(owner != address(0), "PuppyToken: approve from the zero address");
+        require(spender != address(0), "PuppyToken: approve to the zero address");
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
