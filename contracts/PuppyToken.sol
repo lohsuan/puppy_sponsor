@@ -63,10 +63,11 @@ contract PuppyToken is IERC20, Ownable {
     function burn(address account, uint256 amount) external onlyOwner {
         require(account != address(0), "PuppyToken: burn from the zero address");
         require(totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
-        require(_balances[account] >= amount, "PuppyToken: burn amount exceeds the balance of account");
+        uint256 accountBalance = _balances[account];
+        require(accountBalance >= amount, "PuppyToken: burn amount exceeds the balance of account");
 
         require(totalSupply - amount <  totalSupply, "PuppyToken: burn overflow");
-        require(_balances[account] - amount <  _balances[account], "PuppyToken: burn overflow");
+        require(accountBalance - amount <  accountBalance, "PuppyToken: burn overflow");
 
         _balances[account] -= amount;
         totalSupply -= amount;
