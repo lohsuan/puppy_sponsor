@@ -83,8 +83,9 @@ contract PuppyToken is IERC20, Ownable {
         require(account != address(0), "PuppyToken: burn from the zero address");
         require(totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
         require(_balances[account] >= amount, "PuppyToken: burn amount exceeds the balance of account");
-        require(totalSupply - amount <  totalSupply, "PuppyToken: overflow error");
-        require(_balances[account] - amount <  _balances[account], "PuppyToken: overflow error");
+
+        require(totalSupply - amount <  totalSupply, "PuppyToken: burn overflow");
+        require(_balances[account] - amount <  _balances[account], "PuppyToken: burn overflow");
 
         _balances[account] -= amount;
         totalSupply -= amount;
@@ -212,15 +213,12 @@ contract PuppyToken is IERC20, Ownable {
     ) internal virtual {
         require(from != address(0), "PuppyToken: transfer from the zero address");
         require(to != address(0), "PuppyToken: transfer to the zero address");
-
-        uint256 fromBalance = _balances[from];
-        require(fromBalance >= amount, "PuppyToken: transfer amount exceeds balance");
+        require(_balances[from] >= amount, "PuppyToken: transfer amount exceeds balance");
         
-        require(_balances[to] + amount > _balances[to], "PuppyToken: transfer overflow"); // overflow check
+        require(_balances[to] + amount > _balances[to], "PuppyToken: transfer overflow");
+        require(_balances[from] - amount < _balances[from], "PuppyToken: transfer overflow");
 
-        unchecked {     // 溢出會返回"截斷"的结果，若不使用unchecked 則會拋出異常
-            _balances[from] = fromBalance - amount;
-        }
+        _balances[from] -= amount;
         _balances[to] += amount;
 
         emit Transfer(from, to, amount);
