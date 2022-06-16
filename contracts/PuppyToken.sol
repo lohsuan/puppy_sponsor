@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity  0.8.14;
+pragma solidity 0.8.14;
 
 import "./IERC20.sol";
 import "./Ownable.sol";
 
-/** 
+/**
  * @dev this contract implement {IERC20} interface (define in EIT)
  *
  * The total quantity of this token has no upper limit, totalSupply represents how many tokens have been sent (minted)
@@ -17,15 +17,16 @@ import "./Ownable.sol";
 /// @title Puppy token: a ERC20 contract as Puppy Sponsor's token
 contract PuppyToken is IERC20, Ownable {
  
-     /**
+    /**
      * @dev Balances for each account
      */
     mapping(address => uint256) private _balances;
 
     /**
      * @dev Owner of account approves the transfer of an amount to another account.
+     * authorizer => (authorized EOA => authorized amount)
      */
-    mapping(address => mapping(address => uint256)) private _allowances; // authorizer => (authorized EOA => authorized amount)
+    mapping(address => EnumerableMap.AddressToUintMap) private _allowances;
 
     /**
      * @dev Amount of tokens in existence
@@ -43,16 +44,16 @@ contract PuppyToken is IERC20, Ownable {
         _mint(msg.sender, 10000000000);
     }
 
-    /** 
-     * @dev Creates `amount` tokens and assigns them to owner's account
+    /**
+     * @dev Creates `amount` tokens and assigns them to owner's account.
      */
     function mint(uint256 amount) public onlyOwner {
         _mint(owner(), amount);
     }
 
     /**
-     * @dev Destroys `amount` tokens from `account`, reducing the total supply. 
-     * 
+     * @dev Destroys `amount` tokens from `account`, reducing the total supply.
+     *
      * Emits a {Transfer} event with `to` set to the zero address.
      *
      * Requirements:
@@ -131,7 +132,7 @@ contract PuppyToken is IERC20, Ownable {
         return true;
     }
 
-        /**
+    /**
      * @dev Moves `amount` tokens from `from` to `to` using the
      * allowance mechanism. `amount` is then deducted from the caller's allowance.
      *
@@ -202,7 +203,8 @@ contract PuppyToken is IERC20, Ownable {
         return true;
     }
 
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+    /**
+     * @dev Creates `amount` tokens and assigns them to `account`, increasing
      * the total supply.
      *
      * Emits a {Transfer} event with `from` set to the zero address.
@@ -211,10 +213,7 @@ contract PuppyToken is IERC20, Ownable {
      *
      * - `account` cannot be the zero address.
      */
-    function _mint(
-        address account,
-         uint256 amount
-    ) private {
+    function _mint(address account, uint256 amount) private {
         require(account != address(0), "PuppyToken: mint to the zero address");
         require(account == address(account), "PuppyToken: mint to the invalid address");
 
@@ -285,7 +284,8 @@ contract PuppyToken is IERC20, Ownable {
         emit Approval(owner, spender, amount);
     }
     
-     /**
+
+    /**
      * @dev Updates `owner` s allowance for `spender` based on spent `amount`.
      *
      * Does not update the allowance amount in case of infinite allowance.
