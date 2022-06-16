@@ -43,30 +43,11 @@ contract PuppyToken is IERC20, Ownable {
         _mint(msg.sender, 10000000000);
     }
 
-
     /** 
      * @dev Creates `amount` tokens and assigns them to owner's account
      */
-    function mint(uint256 amount) public onlyOwner {
+    function mint(uint256 amount) external onlyOwner {
         _mint(owner(), amount);
-    }
-
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
-     * the total supply.
-     *
-     * Emits a {Transfer} event with `from` set to the zero address.
-     *
-     * Requirements:
-     *
-     * - `account` cannot be the zero address.
-     */
-    function _mint(address account, uint256 amount) internal virtual {
-        require(account != address(0), "PuppyToken: mint to the zero address");
-        require(account == address(account), "PuppyToken: mint to the invalid address");
-
-        totalSupply += amount;
-        _balances[account] += amount;
-        emit Transfer(address(0), account, amount);
     }
 
     /**
@@ -79,7 +60,7 @@ contract PuppyToken is IERC20, Ownable {
      * - `account` cannot be the zero address.
      * - `account` and `totalSupply` must have at least `amount` tokens.
      */
-    function burn(address account, uint256 amount) public virtual onlyOwner {
+    function burn(address account, uint256 amount) external onlyOwner {
         require(account != address(0), "PuppyToken: burn from the zero address");
         require(totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
         require(_balances[account] >= amount, "PuppyToken: burn amount exceeds the balance of account");
@@ -96,7 +77,7 @@ contract PuppyToken is IERC20, Ownable {
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address account) public view override returns (uint256) {
+    function balanceOf(address account) external view override returns (uint256) {
         return _balances[account];
     }
 
@@ -112,7 +93,7 @@ contract PuppyToken is IERC20, Ownable {
      * - `to` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address to, uint256 amount) public override returns (bool) {
+    function transfer(address to, uint256 amount) external override returns (bool) {
         address owner = msg.sender;
         _transfer(owner, to, amount);
         return true;
@@ -143,7 +124,7 @@ contract PuppyToken is IERC20, Ownable {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public override returns (bool) {
+    function approve(address spender, uint256 amount) external override returns (bool) {
         address owner = msg.sender;
         _approve(owner, spender, amount);
         return true;
@@ -161,7 +142,7 @@ contract PuppyToken is IERC20, Ownable {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) external returns (bool) {
         address owner = msg.sender;
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
@@ -181,7 +162,7 @@ contract PuppyToken is IERC20, Ownable {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(address spender, uint256 subtractedValue) external returns (bool) {
         address owner = msg.sender;
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "PuppyToken: decreased allowance below zero");
@@ -190,6 +171,28 @@ contract PuppyToken is IERC20, Ownable {
         }
 
         return true;
+    }
+
+    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+     * the total supply.
+     *
+     * Emits a {Transfer} event with `from` set to the zero address.
+     *
+     * Requirements:
+     *
+     * - `account` cannot be the zero address.
+     */
+    function _mint(
+        address account,
+         uint256 amount
+    ) private {
+        require(account != address(0), "PuppyToken: mint to the zero address");
+        require(account == address(account), "PuppyToken: mint to the invalid address");
+
+        totalSupply += amount;
+        _balances[account] += amount;
+
+        emit Transfer(address(0), account, amount);
     }
 
     /**
@@ -210,7 +213,7 @@ contract PuppyToken is IERC20, Ownable {
         address from,
         address to,
         uint256 amount
-    ) internal virtual {
+    ) private {
         require(from != address(0), "PuppyToken: transfer from the zero address");
         require(to != address(0), "PuppyToken: transfer to the zero address");
         require(_balances[from] >= amount, "PuppyToken: transfer amount exceeds balance");
@@ -241,12 +244,12 @@ contract PuppyToken is IERC20, Ownable {
         address owner,
         address spender,
         uint256 amount
-    ) internal virtual {
+    ) private {
         require(owner != address(0), "PuppyToken: approve from the zero address");
         require(spender != address(0), "PuppyToken: approve to the zero address");
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
-
+    
 }
