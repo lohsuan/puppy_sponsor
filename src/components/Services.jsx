@@ -27,20 +27,20 @@ const Services = () => (
           href={`https://ropsten.etherscan.io/address/${contractAddress}`}
           target="_blank"
           rel="noreferrer"
-          className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base hover:text-blue-400"
+          className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base"
         >
           <p>
-            Contract address: {shortenAddress(contractAddress)}
+            Contract address: <b className="text-cyan-300 hover:text-blue-400">{shortenAddress(contractAddress)}</b>
           </p>
         </a>
         <a
           href={`https://ropsten.etherscan.io/address/${tokenAddress}`}
           target="_blank"
           rel="noreferrer"
-          className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base hover:text-blue-400"
+          className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base"
         >
           <p>
-            Token address: {shortenAddress(tokenAddress)}
+            Token address: <b className="text-cyan-300 hover:text-blue-400">{shortenAddress(tokenAddress)}</b>
           </p>
         </a>
       </div>
