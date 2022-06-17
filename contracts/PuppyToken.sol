@@ -8,7 +8,7 @@ import "./EnumerableMap.sol";
 /**
  * @dev this contract implement {IERC20} interface (define in EIT)
  *
- * The total quantity of this token has no upper limit, totalSupply represents how many tokens have been sent (minted)
+ * The total quantity of this token has no upper limit, _totalSupply represents how many tokens have been sent (minted)
  * When deploying, mint 10000000000 tokens to the contract owner (the person who deploys this contract)
  * The total quantity of this token is fixed when this contract is deployed (Fixed Supply = 10000000000)
  * Only the owner can mint tokens, and burn the tokens of a specific address
@@ -76,7 +76,7 @@ contract PuppyToken is IERC20, Ownable {
         require(account != address(0), "PuppyToken: burn from the zero address");
         require(_totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
 
-        uint256 accountBalance = _balances.get(account);
+        (, uint256 accountBalance) = _balances.tryGet(account);
         require(accountBalance >= amount, "PuppyToken: burn amount exceeds the balance of account");
 
         require(_totalSupply - amount < _totalSupply, "PuppyToken: burn overflow");
@@ -92,7 +92,8 @@ contract PuppyToken is IERC20, Ownable {
      * @dev Returns the amount of tokens owned by `account`.
      */
     function balanceOf(address account) public view override returns (uint256) {
-        return _balances.get(account);
+        (, uint256 accountBalance) = _balances.tryGet(account);
+        return accountBalance;
     }
 
     /**
@@ -232,7 +233,7 @@ contract PuppyToken is IERC20, Ownable {
 
         _totalSupply += amount;
 
-        uint256 currentBalance = _balances.get(account);
+        (, uint256 currentBalance) = _balances.tryGet(account);
         _balances.set(account, currentBalance + amount);
 
         emit Transfer(address(0), account, amount);
@@ -260,8 +261,8 @@ contract PuppyToken is IERC20, Ownable {
         require(from != address(0), "PuppyToken: transfer from the zero address");
         require(to != address(0), "PuppyToken: transfer to the zero address");
 
-        uint256 balanceFrom = _balances.get(from);
-        uint256 balanceTo = _balances.get(to);
+        (, uint256 balanceFrom) = _balances.tryGet(from);
+        (, uint256 balanceTo) = _balances.tryGet(to);
 
         require(balanceFrom >= amount, "PuppyToken: transfer amount exceeds balance");
 
