@@ -2,6 +2,8 @@ import React from 'react'
 import { BsShieldFillCheck } from 'react-icons/bs'
 import { BiSearchAlt } from 'react-icons/bi'
 import { RiHeart2Fill } from 'react-icons/ri'
+import { contractAddress, tokenAddress } from '../utils/constants'
+import { shortenAddress } from '../utils/shortenAddress'
 
 const ServiceCard = ({ color, title, icon, subtitle }) => (
   <div className="flex flex-row justify-start items-start white-glassmorphism p-3 m-2 cursor-pointer hover:shadow-xl">
@@ -21,6 +23,28 @@ const Services = () => (
         <p className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base">
           Offer you convenient, transparent and rapid services to donate safely around the world.
         </p>
+        <a
+          href={`https://ropsten.etherscan.io/address/${contractAddress}`}
+          target="_blank"
+          rel="noreferrer"
+          className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base"
+        >
+          <p>
+            Contract address:{' '}
+            <b className="text-cyan-300 hover:text-blue-400">{shortenAddress(contractAddress)}</b>
+          </p>
+        </a>
+        <a
+          href={`https://ropsten.etherscan.io/address/${tokenAddress}`}
+          target="_blank"
+          rel="noreferrer"
+          className="text-left my-2 text-white font-light md:w-9/12 w-11/12 text-base"
+        >
+          <p>
+            Token address:{' '}
+            <b className="text-cyan-300 hover:text-blue-400">{shortenAddress(tokenAddress)}</b>
+          </p>
+        </a>
       </div>
 
       <div className="flex-1 flex flex-col justify-start items-center">
