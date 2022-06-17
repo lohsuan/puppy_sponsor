@@ -1,6 +1,17 @@
 {
-  "CA": "0x711672C59393883240276df8d68de897C11e5B94",
+  "CA": "0xA553A0869f8e25A0A06B4317DF9e9eAEe9A30bc5",
   "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_tokenAddress",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
     {
       "anonymous": false,
       "inputs": [
