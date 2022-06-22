@@ -4,10 +4,11 @@ import { transactionContext } from '../context/TransactionContext'
 import { Loader } from '.'
 
 const PuppyTokenPage = () => {
-  const { tokenSymbol, tokenAmounts, transferPuppyToken } = useContext(transactionContext)
+  const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken } = useContext(transactionContext)
   const [isProcessing, setIsProcessing] = useToggle(false)
   const [addressTo, setAddressTo] = useState('')
   const [transferAmount, setTransferAmount] = useState(0)
+  const [mintAmount, setMintAmount] = useState(0)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -19,7 +20,13 @@ const PuppyTokenPage = () => {
     setIsProcessing(false)
   }
 
+  const handleMintToken = async (e) => {
+    e.preventDefault()
 
+    setIsProcessing(true)
+    await mintPuppyToken(mintAmount)
+    setMintAmount(0)
+    setIsProcessing(false)
   }
 
   return (
@@ -79,6 +86,28 @@ const PuppyTokenPage = () => {
           </button>
         )}
       </div>
+      <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-100 bg-gray-800">
+        <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
+        <input
+          placeholder="Amount (>= 1 PUPPY)"
+          type="number"
+          step="1"
+          value={mintAmount < 1 ? '' : mintAmount}
+          onChange={(e) => setMintAmount(Number.parseInt(e.target.value))}
+          required
+          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+        />
+        {isProcessing ? (
+          <Loader />
+        ) : (
+          <button
+            type="button"
+            onClick={handleMintToken}
+            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+          >
+            Mint
+          </button>
+        )}
       </div>
     </div>
   )
