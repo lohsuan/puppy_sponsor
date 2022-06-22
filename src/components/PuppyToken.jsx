@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { useToggle } from 'react-use'
 import { transactionContext } from '../context/TransactionContext'
+import Swal from 'sweetalert'
 
 const ProcessingButton = () => (
   <button
@@ -62,8 +63,21 @@ const PuppyTokenPage = () => {
     transferPuppyToken,
     mintPuppyToken,
     burnPuppyToken,
-    transferOwner
+    transferOwner,
+    tokenContractOwner,
+    currentAccount
   } = useContext(transactionContext)
+
+  tokenContractOwner().then((_owner) => {
+    if (currentAccount !== _owner) {
+      Swal({
+        icon: 'error',
+        title: "You are not able to do Owner's Operations",
+        text: 'Transaction will fail since you are not owner.\nPlease login as the foundation owner and try again.'
+      }).then()
+    }
+  })
+
   const [isTransferProcessing, setIsTransferProcessing] = useToggle(false)
   const [isMintProcessing, setIsMintProcessing] = useToggle(false)
   const [isBurnProcessing, setIsBurnProcessing] = useToggle(false)

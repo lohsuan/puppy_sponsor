@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import type { Contract, ContractReceipt, ContractTransaction } from 'ethers'
 import { ethers, providers } from 'ethers'
-
 import { contractABI, contractAddress, tokenABI, tokenAddress } from '../utils/constants'
 import { useSetState } from 'react-use'
 import Swal from 'sweetalert'
@@ -252,6 +251,10 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
+  const tokenContractOwner = async (): Promise<string> => {
+    return (await puppyToken.owner()).toLowerCase()
+  }
+
   const checkIfWalletIsConnect = async (): Promise<void> => {
     try {
       if (!ethereumProvider) {
@@ -382,6 +385,7 @@ export const TransactionsProvider = ({ children }) => {
         mintPuppyToken,
         burnPuppyToken,
         transferOwner,
+        tokenContractOwner,
         formData: donationFormData
       }}
     >
