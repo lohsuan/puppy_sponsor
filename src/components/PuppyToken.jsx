@@ -1,27 +1,25 @@
 import React, { useContext, useState } from 'react'
 import { useToggle } from 'react-use'
 import { transactionContext } from '../context/TransactionContext'
+import { Loader } from '.'
 
 const PuppyTokenPage = () => {
   const { tokenSymbol, tokenAmounts, transferPuppyToken } = useContext(transactionContext)
   const [isProcessing, setIsProcessing] = useToggle(false)
   const [addressTo, setAddressTo] = useState('')
-  const [amount, setAmount] = useState(-1)
+  const [transferAmount, setTransferAmount] = useState(0)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     setIsProcessing(true)
-    await transferPuppyToken(addressTo, amount)
+    await transferPuppyToken(addressTo, transferAmount)
+    setAddressTo("")
+    setTransferAmount(0)
     setIsProcessing(false)
   }
 
-  const handleAddressToInputChange = (e) => {
-    setAddressTo(e.target.value)
-  }
 
-  const handleAmountInputChange = (e) => {
-    setAmount(Number.parseInt(e.target.value))
   }
 
   return (
@@ -56,7 +54,7 @@ const PuppyTokenPage = () => {
           placeholder="To"
           type="string"
           value={addressTo}
-          onChange={handleAddressToInputChange}
+          onChange={(e) => setAddressTo(e.target.value)}
           required
           className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
@@ -64,18 +62,23 @@ const PuppyTokenPage = () => {
           placeholder="Amount (>= 1 PUPPY)"
           type="number"
           step="1"
-          value={amount < 0 ? '' : amount}
-          onChange={handleAmountInputChange}
+          value={transferAmount < 1 ? '' : transferAmount}
+          onChange={(e) => setTransferAmount(Number.parseInt(e.target.value))}
           required
           className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-        >
-          Send now
-        </button>
+        {isProcessing ? (
+          <Loader />
+        ) : (
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+          >
+            Send now
+          </button>
+        )}
+      </div>
       </div>
     </div>
   )
