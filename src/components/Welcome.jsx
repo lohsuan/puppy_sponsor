@@ -22,8 +22,15 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 )
 
 const Welcome = () => {
-  const { currentAccount, connectWallet, handleChange, donateForFood, formData, isLoading } =
-    useContext(transactionContext)
+  const {
+    currentAccount,
+    connectWallet,
+    handleChange,
+    donateForFood,
+    formData,
+    isLoading,
+    tokenAmounts
+  } = useContext(transactionContext)
 
   const handleSubmit = (e) => {
     const { amount, keyword, message } = formData
