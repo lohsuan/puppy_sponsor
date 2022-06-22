@@ -185,9 +185,7 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const mintPuppyToken = async (
-    amount: number
-  ): Promise<ContractReceipt> => {
+  const mintPuppyToken = async (amount: number): Promise<ContractReceipt> => {
     if (isLoading) {
       return
     }

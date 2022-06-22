@@ -4,7 +4,8 @@ import { transactionContext } from '../context/TransactionContext'
 import { Loader } from '.'
 
 const PuppyTokenPage = () => {
-  const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken, burnPuppyToken } = useContext(transactionContext)
+  const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken, burnPuppyToken } =
+    useContext(transactionContext)
   const [isProcessing, setIsProcessing] = useToggle(false)
   const [addressTo, setAddressTo] = useState('')
   const [transferAmount, setTransferAmount] = useState(0)
@@ -17,7 +18,7 @@ const PuppyTokenPage = () => {
 
     setIsProcessing(true)
     await transferPuppyToken(addressTo, transferAmount)
-    setAddressTo("")
+    setAddressTo('')
     setTransferAmount(0)
     setIsProcessing(false)
   }
@@ -36,7 +37,7 @@ const PuppyTokenPage = () => {
 
     setIsProcessing(true)
     await burnPuppyToken(burnAddress, burnAmount)
-    setBurnAddress("")
+    setBurnAddress('')
     setBurnAmount(0)
     setIsProcessing(false)
   }
