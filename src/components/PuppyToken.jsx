@@ -33,16 +33,24 @@ const ProcessingButton = () => (
 )
 
 const PuppyTokenPage = () => {
-  const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken, burnPuppyToken } =
-    useContext(transactionContext)
+  const {
+    tokenSymbol,
+    tokenAmounts,
+    transferPuppyToken,
+    mintPuppyToken,
+    burnPuppyToken,
+    transferOwner
+  } = useContext(transactionContext)
   const [isTransferProcessing, setIsTransferProcessing] = useToggle(false)
   const [isMintProcessing, setIsMintProcessing] = useToggle(false)
   const [isBurnProcessing, setIsBurnProcessing] = useToggle(false)
+  const [isTransferOwnerProcessing, setIsTransferOwnerProcessing] = useToggle(false)
   const [addressTo, setAddressTo] = useState('')
   const [transferAmount, setTransferAmount] = useState(0)
   const [mintAmount, setMintAmount] = useState(0)
   const [burnAddress, setBurnAddress] = useState('')
   const [burnAmount, setBurnAmount] = useState(0)
+  const [newOwner, setNewOwner] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -71,6 +79,15 @@ const PuppyTokenPage = () => {
     setBurnAddress('')
     setBurnAmount(0)
     setIsBurnProcessing(false)
+  }
+
+  const handleTransferOwner = async (e) => {
+    e.preventDefault()
+
+    setIsTransferOwnerProcessing(true)
+    await transferOwner(newOwner)
+    setNewOwner('')
+    setIsTransferOwnerProcessing(false)
   }
 
   return (
@@ -194,6 +211,28 @@ const PuppyTokenPage = () => {
             className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
           >
             Burn
+          </button>
+        )}
+      </div>
+      <div className="m-auto p-5 mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+        <div className="space-y-1 font-medium text-white">Change PUPPY owner</div>
+        <input
+          placeholder="New Owner Address"
+          type="string"
+          value={newOwner}
+          onChange={(e) => setNewOwner(e.target.value)}
+          required
+          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+        />
+        {isTransferOwnerProcessing ? (
+          <ProcessingButton />
+        ) : (
+          <button
+            type="button"
+            onClick={handleTransferOwner}
+            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+          >
+            Submit
           </button>
         )}
       </div>
