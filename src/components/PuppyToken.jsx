@@ -32,6 +32,29 @@ const ProcessingButton = () => (
   </button>
 )
 
+const AddressInput = ({ placeholder, address, onChange }) => (
+  <input
+    placeholder={placeholder}
+    type="string"
+    value={address}
+    onChange={onChange}
+    required
+    className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+  />
+)
+
+const AmountInput = ({ amount, onChange }) => (
+  <input
+    placeholder="Amount (>= 1 PUPPY)"
+    type="number"
+    step="1"
+    value={amount < 1 ? '' : amount}
+    onChange={onChange}
+    required
+    className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+  />
+)
+
 const PuppyTokenPage = () => {
   const {
     tokenSymbol,
@@ -126,22 +149,14 @@ const PuppyTokenPage = () => {
       </p>
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Transfer</div>
-        <input
+        <AddressInput
           placeholder="To"
-          type="string"
-          value={addressTo}
+          address={addressTo}
           onChange={(e) => setAddressTo(e.target.value)}
-          required
-          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
-        <input
-          placeholder="Amount (>= 1 PUPPY)"
-          type="number"
-          step="1"
-          value={transferAmount < 1 ? '' : transferAmount}
+        <AmountInput
+          amount={transferAmount}
           onChange={(e) => setTransferAmount(Number.parseInt(e.target.value))}
-          required
-          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
         {isTransferProcessing ? (
           <ProcessingButton />
@@ -162,14 +177,9 @@ const PuppyTokenPage = () => {
       </p>
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
-        <input
-          placeholder="Amount (>= 1 PUPPY)"
-          type="number"
-          step="1"
-          value={mintAmount < 1 ? '' : mintAmount}
+        <AmountInput
+          amount={mintAmount}
           onChange={(e) => setMintAmount(Number.parseInt(e.target.value))}
-          required
-          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
         {isMintProcessing ? (
           <ProcessingButton />
@@ -185,22 +195,14 @@ const PuppyTokenPage = () => {
       </div>
       <div className="m-auto mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Burn PUPPY token</div>
-        <input
+        <AddressInput
           placeholder="From"
-          type="string"
-          value={burnAddress}
+          address={burnAddress}
           onChange={(e) => setBurnAddress(e.target.value)}
-          required
-          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
-        <input
-          placeholder="Amount (>= 1 PUPPY)"
-          type="number"
-          step="1"
-          value={burnAmount < 1 ? '' : burnAmount}
+        <AmountInput
+          amount={burnAmount}
           onChange={(e) => setBurnAmount(Number.parseInt(e.target.value))}
-          required
-          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
         {isBurnProcessing ? (
           <ProcessingButton />
@@ -216,13 +218,10 @@ const PuppyTokenPage = () => {
       </div>
       <div className="m-auto p-5 mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Change PUPPY owner</div>
-        <input
+        <AddressInput
           placeholder="New Owner Address"
-          type="string"
-          value={newOwner}
+          address={newOwner}
           onChange={(e) => setNewOwner(e.target.value)}
-          required
-          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
         {isTransferOwnerProcessing ? (
           <ProcessingButton />
