@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import type { Contract, ContractReceipt, ContractTransaction } from 'ethers'
 import { ethers, providers } from 'ethers'
 
-import { contractABI, contractAddress } from '../utils/constants'
+import { contractABI, contractAddress, tokenABI, tokenAddress } from '../utils/constants'
 import { useSetState } from 'react-use'
 import Swal from 'sweetalert'
 
@@ -26,7 +26,7 @@ export interface NewPuppyInfo {
 const globalWindow: Window = window
 const ethereumProvider = globalWindow.ethereum
 
-const createEthereumContractClient = (): Contract => {
+const createEthereumContractClient = (address, ABI): Contract => {
   if (!ethereumProvider) {
     Swal({
       icon: 'info',
@@ -37,7 +37,7 @@ const createEthereumContractClient = (): Contract => {
 
   const provider = new ethers.providers.Web3Provider(ethereumProvider)
   const signer = provider.getSigner()
-  return new ethers.Contract(contractAddress, contractABI, signer)
+  return new ethers.Contract(address, ABI, signer)
 }
 
 const defaultDonationFormData = { amount: '', keyword: '', message: '' }
@@ -48,8 +48,11 @@ export const TransactionsProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [transactions, setTransactions] = useState([])
   const [puppies, setPuppies] = useState([])
+  const [tokenAmounts, setTokenAmounts] = useState(0)
+  const [tokenSymbol, setTokenSymbol] = useState('')
 
-  const contract = createEthereumContractClient()
+  const contract = createEthereumContractClient(contractAddress, contractABI)
+  const puppyToken = createEthereumContractClient(tokenAddress, tokenABI)
 
   const handleChange = (e: React.FormEvent<HTMLInputElement>, name: string): void => {
     setDonationFormData((prevState: typeof donationFormData) => ({
@@ -60,7 +63,9 @@ export const TransactionsProvider = ({ children }) => {
 
   const updateChainContents = async (): Promise<void> => {
     await getAllPuppies()
+    await getPuppyTokenSymbol()
     await getAllTransactions()
+    await getPuppyTokenBalance()
   }
 
   const transactionPromise = (transaction: ContractTransaction): Promise<ContractReceipt> => {
@@ -87,7 +92,7 @@ export const TransactionsProvider = ({ children }) => {
         const structuredTransactions = availableTransactions.map((transaction) => ({
           addressFrom: transaction.donor,
           addressTo: transaction.receiver,
-          amount: parseInt(transaction.amount._hex) / 10 ** 18,
+          amount: Number.parseInt(transaction.amount._hex) / 10 ** 18,
           time: new Date(transaction.time.toNumber() * 1000).toLocaleString(),
           puppyId: transaction.puppyId,
           message: transaction.message,
@@ -120,6 +125,63 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.warn(error)
+    }
+  }
+
+  const getPuppyTokenBalance = async (): Promise<void> => {
+    try {
+      if (ethereumProvider) {
+        const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
+        let tokenBalance = await puppyToken.balanceOf(accounts[0])
+        tokenBalance = Number.parseInt(tokenBalance._hex)
+
+        console.info('tokenBalance', tokenBalance)
+
+        setTokenAmounts(tokenBalance)
+      } else {
+        console.info('Ethereum is not present')
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const getPuppyTokenSymbol = async (): Promise<void> => {
+    try {
+      if (ethereumProvider) {
+        let symbol = await puppyToken.symbol()
+
+        console.info('symbol', symbol)
+
+        setTokenSymbol(symbol)
+      } else {
+        console.info('Ethereum is not present')
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const transferPuppyToken = async (
+    to: NonEmptyString,
+    amount: number
+  ): Promise<ContractReceipt> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      // TODO: check if `amount` exceeds solidity uint256
+      const contractTx = await puppyToken.transfer(to, amount)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      console.warn('An error occurred during transferPuppyToken', e)
     }
   }
 
@@ -247,6 +309,9 @@ export const TransactionsProvider = ({ children }) => {
         createNewPuppy,
         handleChange,
         owner,
+        tokenAmounts,
+        tokenSymbol,
+        transferPuppyToken,
         formData: donationFormData
       }}
     >
