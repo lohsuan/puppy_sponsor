@@ -228,6 +228,31 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
+  const transferOwner = async (
+    newOwner: NonEmptyString
+  ): Promise<ContractReceipt> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      const contractTx = await puppyToken.transferOwnership(newOwner)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      await Swal({
+        icon: 'info',
+        title: 'Something went wrong.\n Check if the address is valid, \n and you have the right to change owner.'
+      })
+      console.warn('An error occurred during transferOwner', e)
+    }
+  }
+
   const checkIfWalletIsConnect = async (): Promise<void> => {
     try {
       if (!ethereumProvider) {
@@ -357,6 +382,7 @@ export const TransactionsProvider = ({ children }) => {
         transferPuppyToken,
         mintPuppyToken,
         burnPuppyToken,
+        transferOwner,
         formData: donationFormData
       }}
     >
