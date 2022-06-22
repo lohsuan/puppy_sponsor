@@ -6,7 +6,8 @@ import {
   PuppyDetail,
   Services,
   Transactions,
-  Welcome
+  Welcome,
+  PuppyTokenPage
 } from './components'
 import { Navigate, Route, Routes } from 'react-router-dom'
 
@@ -36,6 +37,7 @@ const App = () => {
           />
 
           <Route path="add-puppy" element={[<AddPuppyPage key="add-puppy" />]} />
+          <Route path="token" element={[<PuppyTokenPage key="token" />]} />
         </Routes>
       </div>
       <Footer />
