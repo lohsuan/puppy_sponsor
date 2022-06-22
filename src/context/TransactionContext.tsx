@@ -185,6 +185,25 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
+  const mintPuppyToken = async (amount: number): Promise<ContractReceipt> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      const contractTx = await puppyToken.mint(amount)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      console.warn('An error occurred during mintPuppyToken', e)
+    }
+  }
+
   const checkIfWalletIsConnect = async (): Promise<void> => {
     try {
       if (!ethereumProvider) {
@@ -312,6 +331,7 @@ export const TransactionsProvider = ({ children }) => {
         tokenAmounts,
         tokenSymbol,
         transferPuppyToken,
+        mintPuppyToken,
         formData: donationFormData
       }}
     >
