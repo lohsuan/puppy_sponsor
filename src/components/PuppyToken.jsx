@@ -1,49 +1,49 @@
 import React, { useContext, useState } from 'react'
 import { useToggle } from 'react-use'
 import { transactionContext } from '../context/TransactionContext'
+import { Loader } from '.'
 
 const PuppyTokenPage = () => {
-  const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken, owner, currentAccount } = useContext(transactionContext)
+  const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken, burnPuppyToken } =
+    useContext(transactionContext)
   const [isProcessing, setIsProcessing] = useToggle(false)
-  const [isMintProcessing, setIsMintProcessing] = useToggle(false)
-  const [addressToTransfer, setAddressToTransfer] = useState('')
-  const [transferAmount, setTransferAmount] = useState(-1)
-  const [mintAmount, setMintAmount] = useState(-1)
+  const [addressTo, setAddressTo] = useState('')
+  const [transferAmount, setTransferAmount] = useState(0)
+  const [mintAmount, setMintAmount] = useState(0)
+  const [burnAddress, setBurnAddress] = useState('')
+  const [burnAmount, setBurnAmount] = useState(0)
 
-  const handleTransfer = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     setIsProcessing(true)
-    await transferPuppyToken(addressToTransfer, transferAmount)
+    await transferPuppyToken(addressTo, transferAmount)
+    setAddressTo('')
+    setTransferAmount(0)
     setIsProcessing(false)
   }
 
-  const handleMint = async (e) => {
+  const handleMintToken = async (e) => {
     e.preventDefault()
 
-    setIsMintProcessing(true)
+    setIsProcessing(true)
     await mintPuppyToken(mintAmount)
-    setIsMintProcessing(false)
+    setMintAmount(0)
+    setIsProcessing(false)
   }
 
-  const handleAddressToTransferInputChange = (e) => {
-    setAddressToTransfer(e.target.value)
-  }
+  const handleBurnToken = async (e) => {
+    e.preventDefault()
 
-  const handleTransferAmountInputChange = (e) => {
-    setTransferAmount(Number.parseInt(e.target.value))
-  }
-
-  const handleMintAmountInputChange = (e) => {
-    setMintAmount(Number.parseInt(e.target.value))
+    setIsProcessing(true)
+    await burnPuppyToken(burnAddress, burnAmount)
+    setBurnAddress('')
+    setBurnAmount(0)
+    setIsProcessing(false)
   }
 
   return (
     <div className="min-h-screen">
-      {/* My Tokens */}
-      <p className="text-left text-xl text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
-        My Tokens
-      </p>
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="flex items-center space-x-4">
           <svg
@@ -64,21 +64,17 @@ const PuppyTokenPage = () => {
           </svg>
           <div className="space-y-1 font-medium text-white">
             <div>{tokenSymbol}</div>
-            <div className="text-sm text-gray-500 text-gray-400">{tokenAmounts}</div>
+            <div className="text-sm text-gray-400">{tokenAmounts}</div>
           </div>
         </div>
       </div>
-      {/* User's Operation */}
-      <p className="text-left mt-3 text-xl text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
-        User's Operation
-      </p>
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-        <div className="space-y-1 font-medium text-white ml-2">Transfer</div>
+        <div className="space-y-1 font-medium text-white">Transfer</div>
         <input
           placeholder="To"
           type="string"
-          value={addressToTransfer}
-          onChange={handleAddressToTransferInputChange}
+          value={addressTo}
+          onChange={(e) => setAddressTo(e.target.value)}
           required
           className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
@@ -86,68 +82,77 @@ const PuppyTokenPage = () => {
           placeholder="Amount (>= 1 PUPPY)"
           type="number"
           step="1"
-          value={transferAmount < 0 ? '' : transferAmount}
-          onChange={handleTransferAmountInputChange}
+          value={transferAmount < 1 ? '' : transferAmount}
+          onChange={(e) => setTransferAmount(Number.parseInt(e.target.value))}
           required
           className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
-        {isProcessing ?
-          <button type="button" disabled className="flex items-center justify-center text-white w-full mt-2 border-[1px] p-2 border-[#8e9fc9d5] rounded-full cursor-not-allowed">
-            <svg className="animate-spin w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            Processing...
-          </button>
-          :
+        {isProcessing ? (
+          <Loader />
+        ) : (
           <button
             type="button"
-            onClick={handleTransfer}
+            onClick={handleSubmit}
             className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
           >
             Send now
           </button>
-        }
+        )}
       </div>
-      {/* Owner's Operation */}
-      {/* {owner == currentAccount ? */}
-        <div>
-          <p className="text-left mt-3 text-xl text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
-            Owner's Operation
-          </p>
-          <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-100 bg-gray-800">
-            <div className="space-y-1 font-medium text-white ml-2">Mint</div>
-            <input
-              placeholder="Amount (>= 1 PUPPY)"
-              type="number"
-              step="1"
-              value={mintAmount < 0 ? '' : mintAmount}
-              onChange={handleMintAmountInputChange}
-              required
-              className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
-            />
-            {isMintProcessing ?
-              <button type="button" disabled className="flex items-center justify-center text-white w-full mt-2 border-[1px] p-2 border-[#8e9fc9d5] rounded-full cursor-not-allowed">
-                <svg className="animate-spin w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Processing...
-              </button>
-              :
-              <button
-                type="button"
-                onClick={handleMint}
-                className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-              >
-                Send now
-              </button>
-            }
-          </div>
-        </div>
-        :
-        ""
-      {/* } */}
+      <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+        <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
+        <input
+          placeholder="Amount (>= 1 PUPPY)"
+          type="number"
+          step="1"
+          value={mintAmount < 1 ? '' : mintAmount}
+          onChange={(e) => setMintAmount(Number.parseInt(e.target.value))}
+          required
+          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+        />
+        {isProcessing ? (
+          <Loader />
+        ) : (
+          <button
+            type="button"
+            onClick={handleMintToken}
+            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+          >
+            Mint
+          </button>
+        )}
+      </div>
+      <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+        <div className="space-y-1 font-medium text-white">Burn PUPPY token</div>
+        <input
+          placeholder="From"
+          type="string"
+          value={burnAddress}
+          onChange={(e) => setBurnAddress(e.target.value)}
+          required
+          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+        />
+        <input
+          placeholder="Amount (>= 1 PUPPY)"
+          type="number"
+          step="1"
+          value={burnAmount < 1 ? '' : burnAmount}
+          onChange={(e) => setBurnAmount(Number.parseInt(e.target.value))}
+          required
+          className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
+        />
+        {isProcessing ? (
+          <Loader />
+        ) : (
+          <button
+            type="button"
+            onClick={handleBurnToken}
+            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+          >
+            Burn
+          </button>
+        )}
+      </div>
     </div>
   )
 }
