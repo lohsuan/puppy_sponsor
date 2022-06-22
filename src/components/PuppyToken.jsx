@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { useToggle } from 'react-use'
 import { transactionContext } from '../context/TransactionContext'
-import { Loader } from '.'
 
 const PuppyTokenPage = () => {
   const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken, burnPuppyToken } =

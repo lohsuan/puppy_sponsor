@@ -1,4 +1,4 @@
-import React, { useContext, useLayoutEffect, useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { isImageFile, isImageUrlStr, uploadMedia } from '../utils/img'
 import { isValidDateStr } from '../utils/date'
 import { useDebounce, useToggle } from 'react-use'
