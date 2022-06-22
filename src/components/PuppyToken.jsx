@@ -6,7 +6,9 @@ import { Loader } from '.'
 const PuppyTokenPage = () => {
   const { tokenSymbol, tokenAmounts, transferPuppyToken, mintPuppyToken, burnPuppyToken } =
     useContext(transactionContext)
-  const [isProcessing, setIsProcessing] = useToggle(false)
+  const [isTransferProcessing, setIsTransferProcessing] = useToggle(false)
+  const [isMintProcessing, setIsMintProcessing] = useToggle(false)
+  const [isBurnProcessing, setIsBurnProcessing] = useToggle(false)
   const [addressTo, setAddressTo] = useState('')
   const [transferAmount, setTransferAmount] = useState(0)
   const [mintAmount, setMintAmount] = useState(0)
@@ -16,34 +18,38 @@ const PuppyTokenPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    setIsProcessing(true)
+    setIsTransferProcessing(true)
     await transferPuppyToken(addressTo, transferAmount)
     setAddressTo('')
     setTransferAmount(0)
-    setIsProcessing(false)
+    setIsTransferProcessing(false)
   }
 
   const handleMintToken = async (e) => {
     e.preventDefault()
 
-    setIsProcessing(true)
+    setIsMintProcessing(true)
     await mintPuppyToken(mintAmount)
     setMintAmount(0)
-    setIsProcessing(false)
+    setIsMintProcessing(false)
   }
 
   const handleBurnToken = async (e) => {
     e.preventDefault()
 
-    setIsProcessing(true)
+    setIsBurnProcessing(true)
     await burnPuppyToken(burnAddress, burnAmount)
     setBurnAddress('')
     setBurnAmount(0)
-    setIsProcessing(false)
+    setIsBurnProcessing(false)
   }
 
   return (
     <div className="min-h-screen">
+      {/* My Tokens */}
+      <p className="text-xl text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
+        My Tokens
+      </p>
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="flex items-center space-x-4">
           <svg
@@ -68,6 +74,10 @@ const PuppyTokenPage = () => {
           </div>
         </div>
       </div>
+      {/* User's Operation */}
+      <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
+        User's Operation
+      </p>
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Transfer</div>
         <input
@@ -87,8 +97,14 @@ const PuppyTokenPage = () => {
           required
           className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
-        {isProcessing ? (
-          <Loader />
+        {isTransferProcessing ? (
+          <button type="button" disabled className="flex items-center justify-center bg-[#3d4f7c] text-white w-full mt-2 border-[1px] p-2 border-[#8e9fc9d5] rounded-full cursor-not-allowed">
+            <svg class="animate-spin w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing...
+          </button>
         ) : (
           <button
             type="button"
@@ -99,6 +115,11 @@ const PuppyTokenPage = () => {
           </button>
         )}
       </div>
+
+      {/* Owner's Operation */}
+      <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
+        Owner's Operation
+      </p>
       <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
         <input
@@ -110,8 +131,14 @@ const PuppyTokenPage = () => {
           required
           className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
-        {isProcessing ? (
-          <Loader />
+        {isMintProcessing ? (
+          <button type="button" disabled className="flex items-center justify-center bg-[#3d4f7c] text-white w-full mt-2 border-[1px] p-2 border-[#8e9fc9d5] rounded-full cursor-not-allowed">
+            <svg class="animate-spin w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing...
+          </button>
         ) : (
           <button
             type="button"
@@ -122,7 +149,7 @@ const PuppyTokenPage = () => {
           </button>
         )}
       </div>
-      <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+      <div className="m-auto mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Burn PUPPY token</div>
         <input
           placeholder="From"
@@ -141,8 +168,14 @@ const PuppyTokenPage = () => {
           required
           className="my-2 w-full rounded-sm p-2 outline-none bg-transparent text-white border-none text-sm white-glassmorphism"
         />
-        {isProcessing ? (
-          <Loader />
+        {isBurnProcessing ? (
+          <button type="button" disabled className="flex items-center justify-center bg-[#3d4f7c] text-white w-full mt-2 border-[1px] p-2 border-[#8e9fc9d5] rounded-full cursor-not-allowed">
+            <svg class="animate-spin w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Processing...
+          </button>
         ) : (
           <button
             type="button"
