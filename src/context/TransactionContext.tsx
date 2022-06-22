@@ -207,6 +207,29 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
+  const burnPuppyToken = async (
+    address: NonEmptyString,
+    amount: number
+  ): Promise<ContractReceipt> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      // TODO: check if `amount` exceeds solidity uint256
+      const contractTx = await puppyToken.burn(address, amount)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      console.warn('An error occurred during burnPuppyToken', e)
+    }
+  }
+
   const checkIfWalletIsConnect = async (): Promise<void> => {
     try {
       if (!ethereumProvider) {
@@ -335,6 +358,7 @@ export const TransactionsProvider = ({ children }) => {
         tokenSymbol,
         transferPuppyToken,
         mintPuppyToken,
+        burnPuppyToken,
         formData: donationFormData
       }}
     >
