@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react'
 import { useToggle } from 'react-use'
 import { transactionContext } from '../context/TransactionContext'
+import Swal from 'sweetalert'
 
 const ProcessingButton = () => (
   <button
@@ -82,9 +83,24 @@ const PuppyTokenPage = () => {
     e.preventDefault()
 
     setIsTransferProcessing(true)
-    await transferPuppyToken(addressTo, transferAmount)
-    setAddressTo('')
-    setTransferAmount(0)
+    const ok = await transferPuppyToken(addressTo, transferAmount)
+
+    if (!ok) {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      })
+    } else {
+      await Swal({
+        icon: 'success',
+        title: 'Nice!',
+        text: transferAmount + ' PUPPY have been transfered to ' + addressTo + '.'
+      })
+      setAddressTo('')
+      setTransferAmount(0)
+    }
+
     setIsTransferProcessing(false)
   }
 
@@ -92,8 +108,23 @@ const PuppyTokenPage = () => {
     e.preventDefault()
 
     setIsMintProcessing(true)
-    await mintPuppyToken(mintAmount)
-    setMintAmount(0)
+    const ok = await mintPuppyToken(mintAmount)
+
+    if (!ok) {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      })
+    } else {
+      await Swal({
+        icon: 'success',
+        title: 'Nice!',
+        text: mintAmount + ' PUPPY have been minted.'
+      })
+      setMintAmount(0)
+    }
+
     setIsMintProcessing(false)
   }
 
@@ -101,9 +132,24 @@ const PuppyTokenPage = () => {
     e.preventDefault()
 
     setIsBurnProcessing(true)
-    await burnPuppyToken(burnAddress, burnAmount)
-    setBurnAddress('')
-    setBurnAmount(0)
+    const ok = await burnPuppyToken(burnAddress, burnAmount)
+
+    if (!ok) {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      })
+    } else {
+      await Swal({
+        icon: 'success',
+        title: 'Nice!',
+        text: burnAmount + ' PUPPY from address ' + burnAddress + ' have been burned.'
+      })
+      setBurnAddress('')
+      setBurnAmount(0)
+    }
+
     setIsBurnProcessing(false)
   }
 
@@ -111,8 +157,23 @@ const PuppyTokenPage = () => {
     e.preventDefault()
 
     setIsTransferOwnerProcessing(true)
-    await transferOwner(newOwner)
-    setNewOwner('')
+    const ok = await transferOwner(newOwner)
+
+    if (!ok) {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      })
+    } else {
+      await Swal({
+        icon: 'success',
+        title: 'Nice!',
+        text: newOwner + ' has become the owner of PUPPY.'
+      })
+      setNewOwner('')
+    }
+
     setIsTransferOwnerProcessing(false)
   }
 
