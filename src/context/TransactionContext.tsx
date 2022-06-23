@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import type { Contract, ContractReceipt, ContractTransaction } from 'ethers'
 import { ethers, providers } from 'ethers'
 import { contractABI, contractAddress, tokenABI, tokenAddress } from '../utils/constants'
-import { useSetState } from 'react-use'
+import { useSetState, useToggle } from 'react-use'
 import Swal from 'sweetalert'
 
 export const transactionContext = React.createContext(undefined, undefined)
@@ -49,6 +49,7 @@ export const TransactionsProvider = ({ children }) => {
   const [puppies, setPuppies] = useState([])
   const [tokenAmounts, setTokenAmounts] = useState(0)
   const [tokenSymbol, setTokenSymbol] = useState('')
+  const [isTokenContractOwner, setIsTokenContractOwner] = useToggle(false)
 
   const contract = createEthereumContractClient(contractAddress, contractABI)
   const puppyToken = createEthereumContractClient(tokenAddress, tokenABI)
@@ -65,6 +66,7 @@ export const TransactionsProvider = ({ children }) => {
     await getPuppyTokenSymbol()
     await getAllTransactions()
     await getPuppyTokenBalance()
+    await checkTokenContractOwner()
   }
 
   const transactionPromise = (transaction: ContractTransaction): Promise<ContractReceipt> => {
@@ -251,8 +253,23 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const tokenContractOwner = async (): Promise<string> => {
-    return (await puppyToken.owner()).toLowerCase()
+  const checkTokenContractOwner = async (): Promise<string> => {
+    try {
+      if (ethereumProvider) {
+        const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
+        let owner = (await puppyToken.owner()).toLowerCase()
+
+        console.info('tokenOwner', owner)
+
+        if (owner === accounts[0]) {
+          setIsTokenContractOwner(true)
+        }
+      } else {
+        console.info('Ethereum is not present')
+      }
+    } catch (error) {
+      console.warn(error)
+    }
   }
 
   const checkIfWalletIsConnect = async (): Promise<void> => {
@@ -385,7 +402,7 @@ export const TransactionsProvider = ({ children }) => {
         mintPuppyToken,
         burnPuppyToken,
         transferOwner,
-        tokenContractOwner,
+        isTokenContractOwner,
         formData: donationFormData
       }}
     >

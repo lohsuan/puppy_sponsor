@@ -64,19 +64,9 @@ const PuppyTokenPage = () => {
     mintPuppyToken,
     burnPuppyToken,
     transferOwner,
-    tokenContractOwner,
+    isTokenContractOwner,
     currentAccount
   } = useContext(transactionContext)
-
-  tokenContractOwner().then((_owner) => {
-    if (currentAccount !== _owner) {
-      Swal({
-        icon: 'error',
-        title: "You are not able to do Owner's Operations",
-        text: 'Transaction will fail since you are not owner.\nPlease login as the foundation owner and try again.'
-      }).then()
-    }
-  })
 
   const [isTransferProcessing, setIsTransferProcessing] = useToggle(false)
   const [isMintProcessing, setIsMintProcessing] = useToggle(false)
@@ -174,70 +164,76 @@ const PuppyTokenPage = () => {
               )}
             </div>
 
-            {/* Owner's Operation */}
-            <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
-              Owner's Operation
-            </p>
-            <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-              <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
-              <AmountInput
-                amount={mintAmount}
-                onChange={(e) => setMintAmount(Number.parseInt(e.target.value))}
-              />
-              {isMintProcessing ? (
-                <ProcessingButton />
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleMintToken}
-                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-                >
-                  Mint
-                </button>
-              )}
-            </div>
-            <div className="m-auto mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-              <div className="space-y-1 font-medium text-white">Burn PUPPY token</div>
-              <AddressInput
-                placeholder="From"
-                address={burnAddress}
-                onChange={(e) => setBurnAddress(e.target.value)}
-              />
-              <AmountInput
-                amount={burnAmount}
-                onChange={(e) => setBurnAmount(Number.parseInt(e.target.value))}
-              />
-              {isBurnProcessing ? (
-                <ProcessingButton />
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleBurnToken}
-                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-                >
-                  Burn
-                </button>
-              )}
-            </div>
-            <div className="m-auto p-5 mt-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-              <div className="space-y-1 font-medium text-white">Change PUPPY owner</div>
-              <AddressInput
-                placeholder="New Owner Address"
-                address={newOwner}
-                onChange={(e) => setNewOwner(e.target.value)}
-              />
-              {isTransferOwnerProcessing ? (
-                <ProcessingButton />
-              ) : (
-                <button
-                  type="button"
-                  onClick={handleTransferOwner}
-                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-                >
-                  Submit
-                </button>
-              )}
-            </div>
+            {isTokenContractOwner ? (
+              <div>
+                {/* Owner's Operation */}
+                <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
+                  Owner's Operation
+                </p>
+                <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+                  <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
+                  <AmountInput
+                    amount={mintAmount}
+                    onChange={(e) => setMintAmount(Number.parseInt(e.target.value))}
+                  />
+                  {isMintProcessing ? (
+                    <ProcessingButton />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleMintToken}
+                      className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                    >
+                      Mint
+                    </button>
+                  )}
+                </div>
+                <div className="m-auto mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+                  <div className="space-y-1 font-medium text-white">Burn PUPPY token</div>
+                  <AddressInput
+                    placeholder="From"
+                    address={burnAddress}
+                    onChange={(e) => setBurnAddress(e.target.value)}
+                  />
+                  <AmountInput
+                    amount={burnAmount}
+                    onChange={(e) => setBurnAmount(Number.parseInt(e.target.value))}
+                  />
+                  {isBurnProcessing ? (
+                    <ProcessingButton />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleBurnToken}
+                      className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                    >
+                      Burn
+                    </button>
+                  )}
+                </div>
+                <div className="m-auto p-5 mt-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+                  <div className="space-y-1 font-medium text-white">Change PUPPY owner</div>
+                  <AddressInput
+                    placeholder="New Owner Address"
+                    address={newOwner}
+                    onChange={(e) => setNewOwner(e.target.value)}
+                  />
+                  {isTransferOwnerProcessing ? (
+                    <ProcessingButton />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleTransferOwner}
+                      className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                    >
+                      Submit
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div></div>
+            )}
           </div>
         ) : (
           <h3 className="text-white text-3xl text-center my-2">
