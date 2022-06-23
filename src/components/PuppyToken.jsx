@@ -230,7 +230,7 @@ const PuppyTokenPage = () => {
           </button>
         )}
       </div>
-      <div className="m-auto p-5 mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+      <div className="m-auto p-5 mt-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
         <div className="space-y-1 font-medium text-white">Change PUPPY owner</div>
         <AddressInput
           placeholder="New Owner Address"
