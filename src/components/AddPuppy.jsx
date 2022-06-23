@@ -16,25 +16,33 @@ const AddPuppyPage = () => {
   const defaultNewPuppyImgPlaceHolderUrl = '/default-placeholder.webp'
 
   const { createNewPuppy, owner, currentAccount } = useContext(transactionContext)
-
-  owner().then((_owner) => {
-    if (currentAccount !== _owner) {
-      Swal({
-        icon: 'error',
-        title: 'You are not able to add puppy',
-        text: 'Transaction will fail since you are not owner.\nPlease login as the foundation owner and try again.'
-      }).then()
-    }
-  })
-
   const [newPuppyName, setNewPuppyName] = useState('')
   const [newPuppyBirthday, setNewPuppyBirthday] = useState('')
   const [newPuppyDesc, setNewPuppyDesc] = useState('')
   const [newPuppyImgUrl, setNewPuppyImgUrl] = useState(defaultNewPuppyImgPlaceHolderUrl)
   const [isProcessing, setIsProcessing] = useToggle(false)
   const [isFormValid, setIsFormValid] = useToggle(false)
+  const [isOwner, setIsOwner] = useState(false)
 
   const fileUploader = useRef(null)
+
+  const warnIfNotOwner = () => {
+    owner().then((_owner) => {
+      if (currentAccount !== _owner) {
+        Swal({
+          icon: 'error',
+          title: 'You are not able to add puppy',
+          text: 'Transaction will fail since you are not owner.\nPlease login as the foundation owner and try again.'
+        }).then()
+      } else {
+        setIsOwner(true)
+      }
+    })
+  }
+
+  useEffect(() => {
+    warnIfNotOwner()
+  }, [isOwner])
 
   useDebounce(
     () =>
