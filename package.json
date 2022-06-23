@@ -11,8 +11,8 @@
     "format": "prettier --write './src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "ethers": "^5.6.9",
+    "ipfs-http-client": "^57.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
@@ -37,6 +37,7 @@
     "prettier": "^2.7.1",
     "tailwindcss": "^3.1.4",
     "typescript": "^4.7.4",
+    "undici": "^5.5.1",
     "vite": "^2.9.12",
     "vite-plugin-html": "^3.2.0"
   }
