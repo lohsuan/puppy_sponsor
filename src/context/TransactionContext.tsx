@@ -91,7 +91,6 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
     try {
       if (ethereumProvider && contract) {
         const availableTransactions = await contract.getAllDonateTransactions()
-        console.info('availableTransactions', availableTransactions)
 
         const structuredTransactions = availableTransactions.map((transaction: any) => ({
           addressFrom: transaction.donor,
@@ -121,8 +120,6 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
       if (ethereumProvider && contract) {
         const availablePuppies = await contract.getAllPuppies()
 
-        console.info('puppies', availablePuppies)
-
         setPuppies(availablePuppies)
       } else {
         console.info('Ethereum is not present')
@@ -139,8 +136,6 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
         let tokenBalance = await puppyToken.balanceOf(accounts[0])
         tokenBalance = Number.parseInt(tokenBalance._hex)
 
-        console.info('tokenBalance', tokenBalance)
-
         setTokenAmounts(tokenBalance)
       } else {
         console.info('Ethereum is not present')
@@ -154,8 +149,6 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
     try {
       if (ethereumProvider && puppyToken) {
         let symbol = await puppyToken.symbol()
-
-        console.info('symbol', symbol)
 
         setTokenSymbol(symbol)
       } else {
@@ -281,8 +274,6 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
       if (ethereumProvider && puppyToken) {
         const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
         let owner = (await puppyToken.owner()).toLowerCase()
-
-        console.info('tokenOwner', owner)
 
         if (owner === accounts[0]) {
           setIsTokenContractOwner(true)
