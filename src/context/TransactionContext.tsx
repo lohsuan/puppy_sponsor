@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import type { Contract, ContractReceipt, ContractTransaction } from 'ethers'
 import { ethers, providers } from 'ethers'
-
-import { contractABI, contractAddress } from '../utils/constants'
-import { useSetState } from 'react-use'
+import { contractABI, contractAddress, tokenABI, tokenAddress } from '../utils/constants'
+import { useSetState, useToggle } from 'react-use'
 import Swal from 'sweetalert'
 
-export const transactionContext = React.createContext(undefined, undefined)
+export const transactionContext = React.createContext({})
 
 declare global {
   interface Window {
@@ -26,32 +25,39 @@ export interface NewPuppyInfo {
 const globalWindow: Window = window
 const ethereumProvider = globalWindow.ethereum
 
-const createEthereumContractClient = (): Contract => {
+const createEthereumContractClient = (
+  address: string,
+  ABI: ethers.ContractInterface
+): Contract | undefined => {
   if (!ethereumProvider) {
     Swal({
       icon: 'info',
       title: 'Please install MetaMask!'
     }).then()
-    return
+    return undefined
   }
 
   const provider = new ethers.providers.Web3Provider(ethereumProvider)
   const signer = provider.getSigner()
-  return new ethers.Contract(contractAddress, contractABI, signer)
+  return new ethers.Contract(address, ABI, signer)
 }
 
 const defaultDonationFormData = { amount: '', keyword: '', message: '' }
 
-export const TransactionsProvider = ({ children }) => {
+export const TransactionsProvider = ({ children }: { children: React.ReactNode }) => {
   const [donationFormData, setDonationFormData] = useSetState(defaultDonationFormData)
   const [currentAccount, setCurrentAccount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [transactions, setTransactions] = useState([])
   const [puppies, setPuppies] = useState([])
+  const [tokenAmounts, setTokenAmounts] = useState(0)
+  const [tokenSymbol, setTokenSymbol] = useState('')
+  const [isTokenContractOwner, setIsTokenContractOwner] = useToggle(false)
 
-  const contract = createEthereumContractClient()
+  const contract = createEthereumContractClient(contractAddress, contractABI)
+  const puppyToken = createEthereumContractClient(tokenAddress, tokenABI)
 
-  const handleChange = (e: React.FormEvent<HTMLInputElement>, name: string): void => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, name: string): void => {
     setDonationFormData((prevState: typeof donationFormData) => ({
       ...prevState,
       [name]: e.target.value
@@ -60,7 +66,10 @@ export const TransactionsProvider = ({ children }) => {
 
   const updateChainContents = async (): Promise<void> => {
     await getAllPuppies()
+    await getPuppyTokenSymbol()
     await getAllTransactions()
+    await getPuppyTokenBalance()
+    await checkTokenContractOwner()
   }
 
   const transactionPromise = (transaction: ContractTransaction): Promise<ContractReceipt> => {
@@ -80,14 +89,13 @@ export const TransactionsProvider = ({ children }) => {
 
   const getAllTransactions = async (): Promise<void> => {
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const availableTransactions = await contract.getAllDonateTransactions()
-        console.info('availableTransactions', availableTransactions)
 
-        const structuredTransactions = availableTransactions.map((transaction) => ({
+        const structuredTransactions = availableTransactions.map((transaction: any) => ({
           addressFrom: transaction.donor,
           addressTo: transaction.receiver,
-          amount: parseInt(transaction.amount._hex) / 10 ** 18,
+          amount: Number.parseInt(transaction.amount._hex) / 10 ** 18,
           time: new Date(transaction.time.toNumber() * 1000).toLocaleString(),
           puppyId: transaction.puppyId,
           message: transaction.message,
@@ -104,22 +112,178 @@ export const TransactionsProvider = ({ children }) => {
   }
 
   const owner = async (): Promise<string> => {
-    return (await contract.owner()).toLowerCase()
+    return contract ? (await contract.owner()).toLowerCase() : ''
   }
 
   const getAllPuppies = async (): Promise<void> => {
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const availablePuppies = await contract.getAllPuppies()
-
-        console.info('puppies', availablePuppies)
-
+        console.info("puppies", availablePuppies)
         setPuppies(availablePuppies)
       } else {
         console.info('Ethereum is not present')
       }
     } catch (error) {
       console.warn(error)
+    }
+  }
+
+  const getPuppyTokenBalance = async (): Promise<void> => {
+    try {
+      if (ethereumProvider && puppyToken) {
+        const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
+        let tokenBalance = await puppyToken.balanceOf(accounts[0])
+        tokenBalance = Number.parseInt(tokenBalance._hex)
+
+        setTokenAmounts(tokenBalance)
+      } else {
+        console.info('Ethereum is not present')
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const getPuppyTokenSymbol = async (): Promise<void> => {
+    try {
+      if (ethereumProvider && puppyToken) {
+        let symbol = await puppyToken.symbol()
+
+        setTokenSymbol(symbol)
+      } else {
+        console.info('Ethereum is not present')
+      }
+    } catch (error) {
+      console.warn(error)
+    }
+  }
+
+  const transferPuppyToken = async (
+    to: NonEmptyString,
+    amount: number
+  ): Promise<ContractReceipt | undefined> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
+        return
+      }
+
+      // TODO: check if `amount` exceeds solidity uint256
+      const contractTx = await puppyToken.transfer(to, amount)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      console.warn('An error occurred during transferPuppyToken', e)
+    }
+  }
+
+  const mintPuppyToken = async (amount: number): Promise<ContractReceipt | undefined> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
+        return
+      }
+
+      // TODO: check if `amount` exceeds solidity uint256
+      const contractTx = await puppyToken.mint(amount)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      console.warn('An error occurred during mintPuppyToken', e)
+    }
+  }
+
+  const burnPuppyToken = async (
+    address: NonEmptyString,
+    amount: number
+  ): Promise<ContractReceipt | undefined> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
+        return
+      }
+
+      // TODO: check if `amount` exceeds solidity uint256
+      const contractTx = await puppyToken.burn(address, amount)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      console.warn('An error occurred during burnPuppyToken', e)
+    }
+  }
+
+  const transferOwner = async (newOwner: NonEmptyString): Promise<ContractReceipt | undefined> => {
+    if (isLoading) {
+      return
+    }
+
+    try {
+      if (!ethereumProvider) {
+        console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
+        return
+      }
+
+      const contractTx = await puppyToken.transferOwnership(newOwner)
+
+      return transactionPromise(contractTx)
+    } catch (e) {
+      await Swal({
+        icon: 'info',
+        title:
+          'Something went wrong.\n Check if the address is valid, \n and you have the right to change owner.'
+      })
+      console.warn('An error occurred during transferOwner', e)
+    }
+  }
+
+  const checkTokenContractOwner = async (): Promise<string | undefined> => {
+    try {
+      if (ethereumProvider && puppyToken) {
+        const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
+        let owner = (await puppyToken.owner()).toLowerCase()
+
+        if (owner === accounts[0]) {
+          setIsTokenContractOwner(true)
+        }
+      } else {
+        console.info('Ethereum is not present')
+      }
+    } catch (error) {
+      console.warn(error)
+      return
     }
   }
 
@@ -133,7 +297,7 @@ export const TransactionsProvider = ({ children }) => {
         return
       }
 
-      const accounts = await ethereumProvider.request({ method: 'eth_accounts' })
+      const accounts = await ethereumProvider.request!({ method: 'eth_accounts' })
 
       if (accounts.length) {
         setCurrentAccount(accounts[0])
@@ -156,21 +320,22 @@ export const TransactionsProvider = ({ children }) => {
         return
       }
 
-      const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
+      const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
 
       setCurrentAccount(accounts[0].toLowerCase())
+      await updateChainContents()
     } catch (error) {
       console.warn('No ethereum object', error)
     }
   }
 
-  const donateForFood = async (): Promise<ContractReceipt> => {
+  const donateForFood = async (): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
 
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const { amount, keyword, message } = donationFormData
 
         const options = { value: ethers.utils.parseEther(amount) }
@@ -185,13 +350,13 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const donateForPuppy = async (puppyId): Promise<ContractReceipt> => {
+  const donateForPuppy = async (puppyId: string): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
 
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const { amount, keyword, message } = donationFormData
 
         const options = { value: ethers.utils.parseEther(amount) }
@@ -206,7 +371,9 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const createNewPuppy = async (newPuppyInfo: NewPuppyInfo): Promise<ContractReceipt> => {
+  const createNewPuppy = async (
+    newPuppyInfo: NewPuppyInfo
+  ): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
@@ -214,6 +381,11 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (!ethereumProvider) {
         console.info('No ethereum object')
+        return
+      }
+
+      if (!contract) {
+        console.warn('puppySponsor contract client is not initialized')
         return
       }
 
@@ -247,6 +419,13 @@ export const TransactionsProvider = ({ children }) => {
         createNewPuppy,
         handleChange,
         owner,
+        tokenAmounts,
+        tokenSymbol,
+        transferPuppyToken,
+        mintPuppyToken,
+        burnPuppyToken,
+        transferOwner,
+        isTokenContractOwner,
         formData: donationFormData
       }}
     >

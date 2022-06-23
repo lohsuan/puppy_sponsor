@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.14;
+pragma solidity 0.8.15;
 
 import "./IERC20.sol";
 import "./Ownable.sol";
@@ -74,15 +74,17 @@ contract PuppyToken is IERC20, Ownable {
      */
     function burn(address account, uint256 amount) public onlyOwner {
         require(account != address(0), "PuppyToken: burn from the zero address");
-        require(_totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
 
         (, uint256 accountBalance) = _balances.tryGet(account);
-        require(accountBalance >= amount, "PuppyToken: burn amount exceeds the balance of account");
 
-        require(_totalSupply - amount < _totalSupply, "PuppyToken: burn overflow");
+        require(accountBalance >= amount, "PuppyToken: burn amount exceeds the balance of account");
         require(accountBalance - amount < accountBalance, "PuppyToken: burn overflow");
 
         _balances.set(account, accountBalance - amount);
+
+        require(_totalSupply >= amount, "PuppyToken: burn amount exceeds the total supply");
+        require(_totalSupply - amount < _totalSupply, "PuppyToken: burn overflow");
+
         _totalSupply -= amount;
 
         emit Transfer(account, address(0), amount);
@@ -262,14 +264,16 @@ contract PuppyToken is IERC20, Ownable {
         require(to != address(0), "PuppyToken: transfer to the zero address");
 
         (, uint256 balanceFrom) = _balances.tryGet(from);
-        (, uint256 balanceTo) = _balances.tryGet(to);
 
         require(balanceFrom >= amount, "PuppyToken: transfer amount exceeds balance");
-
-        require(balanceTo + amount > balanceTo, "PuppyToken: transfer overflow");
         require(balanceFrom - amount < balanceFrom, "PuppyToken: transfer overflow");
 
         _balances.set(from, balanceFrom - amount);
+
+        (, uint256 balanceTo) = _balances.tryGet(to);
+
+        require(balanceTo + amount > balanceTo, "PuppyToken: transfer overflow");
+        
         _balances.set(to, balanceTo + amount);
 
         emit Transfer(from, to, amount);
