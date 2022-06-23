@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { useToggle } from 'react-use'
 import { transactionContext } from '../context/TransactionContext'
-import Swal from 'sweetalert'
 
 const ProcessingButton = () => (
   <button
