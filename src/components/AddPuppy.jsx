@@ -80,6 +80,7 @@ const AddPuppyPage = () => {
 
     setIsProcessing(true)
     setIsLoadingImg(true)
+    setNewPuppyImgUrl(defaultNewPuppyImgPlaceHolderUrl)
     const { url } = await uploadFile(file)
     setIsProcessing(false)
     setIsLoadingImg(false)
@@ -142,7 +143,7 @@ const AddPuppyPage = () => {
         </p>
         <div className="flex flex-col items-center md:flex-row">
           <div className="flex flex-col h-auto w-1/3 my-2">
-            <div className="md:w-full cursor-pointer p-5 border-dashed border-4 border-gray-400 hover:border-amber-300 object-cover w-auto rounded-t-lg  md:rounded-none md:rounded-l-lg">
+            <div className="md:w-full cursor-pointer p-5 border-dashed border-4 border-gray-400 hover:border-amber-300 object-cover w-auto rounded-t-lg  md:rounded-none md:rounded-l-lg flex justify-center items-center">
               {isLoadingImg ? (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -188,7 +189,9 @@ const AddPuppyPage = () => {
               type="text"
               id="custom-image-input"
               placeholder="https://"
-              value={newPuppyImgUrl === defaultNewPuppyImgPlaceHolderUrl ? "https://" : newPuppyImgUrl}
+              value={
+                newPuppyImgUrl === defaultNewPuppyImgPlaceHolderUrl ? 'https://' : newPuppyImgUrl
+              }
               onChange={(el) => setNewPuppyImgUrl(el.target.value)}
               className="block p-2 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             />
