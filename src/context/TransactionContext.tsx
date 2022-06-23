@@ -119,7 +119,7 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
     try {
       if (ethereumProvider && contract) {
         const availablePuppies = await contract.getAllPuppies()
-
+        console.info("puppies", availablePuppies)
         setPuppies(availablePuppies)
       } else {
         console.info('Ethereum is not present')
