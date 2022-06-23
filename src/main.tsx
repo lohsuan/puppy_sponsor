@@ -6,11 +6,11 @@ import './assets/style/index.css'
 import { TransactionsProvider } from './context/TransactionContext'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <TransactionsProvider>
+  <TransactionsProvider>
+    <React.StrictMode>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </TransactionsProvider>
-  </React.StrictMode>
+    </React.StrictMode>
+  </TransactionsProvider>
 )
