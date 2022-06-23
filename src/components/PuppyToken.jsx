@@ -128,125 +128,136 @@ const PuppyTokenPage = () => {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* My Tokens */}
-      <p className="text-xl text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
-        My Tokens
-      </p>
-      <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-        <div className="flex items-center space-x-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            stroke="currentColor"
-            className="w-6 h-6 text-white"
-            viewBox="0 0 24 24"
-          >
-            <path d="m12 14 9-5-9-5-9 5 9 5z" />
-            <path d="m12 14 6.16-3.422a12.083 12.083 0 0 1 .665 6.479A11.952 11.952 0 0 0 12 20.055a11.952 11.952 0 0 0-6.824-2.998 12.078 12.078 0 0 1 .665-6.479L12 14z" />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m12 14 9-5-9-5-9 5 9 5zm0 0 6.16-3.422a12.083 12.083 0 0 1 .665 6.479A11.952 11.952 0 0 0 12 20.055a11.952 11.952 0 0 0-6.824-2.998 12.078 12.078 0 0 1 .665-6.479L12 14zm-4 6v-7.5l4-2.222"
-            />
-          </svg>
-          <div className="space-y-1 font-medium text-white">
-            <div>{tokenSymbol}</div>
-            <div className="text-sm text-gray-400">{tokenAmounts}</div>
-          </div>
-        </div>
-      </div>
-      {/* User's Operation */}
-      <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
-        User's Operation
-      </p>
-      <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-        <div className="space-y-1 font-medium text-white">Transfer</div>
-        <AddressInput
-          placeholder="To"
-          address={addressTo}
-          onChange={(e) => setAddressTo(e.target.value)}
-        />
-        <AmountInput
-          amount={transferAmount}
-          onChange={(e) => setTransferAmount(Number.parseInt(e.target.value))}
-        />
-        {isTransferProcessing ? (
-          <ProcessingButton />
-        ) : (
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-          >
-            Send now
-          </button>
-        )}
-      </div>
+    <div className="flex w-full min-h-screen justify-center items-center 2xl:px-20 gradient-bg-transactions">
+      <div className="md:p-12 py-12 px-4">
+        {currentAccount ? (
+          <div>
+            {/* My Tokens */}
+            <p className="text-xl text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
+              My Tokens
+            </p>
+            <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+              <div className="flex items-center space-x-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  stroke="currentColor"
+                  className="w-6 h-6 text-white"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="m12 14 9-5-9-5-9 5 9 5z" />
+                  <path d="m12 14 6.16-3.422a12.083 12.083 0 0 1 .665 6.479A11.952 11.952 0 0 0 12 20.055a11.952 11.952 0 0 0-6.824-2.998 12.078 12.078 0 0 1 .665-6.479L12 14z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m12 14 9-5-9-5-9 5 9 5zm0 0 6.16-3.422a12.083 12.083 0 0 1 .665 6.479A11.952 11.952 0 0 0 12 20.055a11.952 11.952 0 0 0-6.824-2.998 12.078 12.078 0 0 1 .665-6.479L12 14zm-4 6v-7.5l4-2.222"
+                  />
+                </svg>
+                <div className="space-y-1 font-medium text-white">
+                  <div>{tokenSymbol}</div>
+                  <div className="text-sm text-gray-400">{tokenAmounts}</div>
+                </div>
+              </div>
+            </div>
 
-      {/* Owner's Operation */}
-      <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
-        Owner's Operation
-      </p>
-      <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-        <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
-        <AmountInput
-          amount={mintAmount}
-          onChange={(e) => setMintAmount(Number.parseInt(e.target.value))}
-        />
-        {isMintProcessing ? (
-          <ProcessingButton />
+            {/* User's Operation */}
+            <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
+              My Operation
+            </p>
+            <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+              <div className="space-y-1 font-medium text-white">Transfer</div>
+              <AddressInput
+                placeholder="To"
+                address={addressTo}
+                onChange={(e) => setAddressTo(e.target.value)}
+              />
+              <AmountInput
+                amount={transferAmount}
+                onChange={(e) => setTransferAmount(Number.parseInt(e.target.value))}
+              />
+              {isTransferProcessing ? (
+                <ProcessingButton />
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                >
+                  Send now
+                </button>
+              )}
+            </div>
+
+            {/* Owner's Operation */}
+            <p className="text-xl mt-2 text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
+              Owner's Operation
+            </p>
+            <div className="m-auto p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+              <div className="space-y-1 font-medium text-white">Mint PUPPY token</div>
+              <AmountInput
+                amount={mintAmount}
+                onChange={(e) => setMintAmount(Number.parseInt(e.target.value))}
+              />
+              {isMintProcessing ? (
+                <ProcessingButton />
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleMintToken}
+                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                >
+                  Mint
+                </button>
+              )}
+            </div>
+            <div className="m-auto mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+              <div className="space-y-1 font-medium text-white">Burn PUPPY token</div>
+              <AddressInput
+                placeholder="From"
+                address={burnAddress}
+                onChange={(e) => setBurnAddress(e.target.value)}
+              />
+              <AmountInput
+                amount={burnAmount}
+                onChange={(e) => setBurnAmount(Number.parseInt(e.target.value))}
+              />
+              {isBurnProcessing ? (
+                <ProcessingButton />
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleBurnToken}
+                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                >
+                  Burn
+                </button>
+              )}
+            </div>
+            <div className="m-auto p-5 mt-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
+              <div className="space-y-1 font-medium text-white">Change PUPPY owner</div>
+              <AddressInput
+                placeholder="New Owner Address"
+                address={newOwner}
+                onChange={(e) => setNewOwner(e.target.value)}
+              />
+              {isTransferOwnerProcessing ? (
+                <ProcessingButton />
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleTransferOwner}
+                  className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
+                >
+                  Submit
+                </button>
+              )}
+            </div>
+          </div>
         ) : (
-          <button
-            type="button"
-            onClick={handleMintToken}
-            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-          >
-            Mint
-          </button>
-        )}
-      </div>
-      <div className="m-auto mt-5 p-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-        <div className="space-y-1 font-medium text-white">Burn PUPPY token</div>
-        <AddressInput
-          placeholder="From"
-          address={burnAddress}
-          onChange={(e) => setBurnAddress(e.target.value)}
-        />
-        <AmountInput
-          amount={burnAmount}
-          onChange={(e) => setBurnAmount(Number.parseInt(e.target.value))}
-        />
-        {isBurnProcessing ? (
-          <ProcessingButton />
-        ) : (
-          <button
-            type="button"
-            onClick={handleBurnToken}
-            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-          >
-            Burn
-          </button>
-        )}
-      </div>
-      <div className="m-auto p-5 mt-5 max-w-[90vw] xl:max-w-[70vw] md:w-auto rounded-lg border shadow-md border-gray-700 bg-gray-800">
-        <div className="space-y-1 font-medium text-white">Change PUPPY owner</div>
-        <AddressInput
-          placeholder="New Owner Address"
-          address={newOwner}
-          onChange={(e) => setNewOwner(e.target.value)}
-        />
-        {isTransferOwnerProcessing ? (
-          <ProcessingButton />
-        ) : (
-          <button
-            type="button"
-            onClick={handleTransferOwner}
-            className="text-white w-full mt-2 border-[1px] p-2 border-[#3d4f7c] hover:bg-[#3d4f7c] rounded-full cursor-pointer"
-          >
-            Submit
-          </button>
+          <h3 className="text-white text-3xl text-center my-2">
+            Connect your account to see your tokens and do operations
+          </h3>
         )}
       </div>
     </div>
