@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Footer = () => (
   <div className="w-full flex md:justify-center justify-between items-center flex-col p-4 gradient-bg-footer">
     <img src="/logo.webp" alt="logo" className="w-16" />

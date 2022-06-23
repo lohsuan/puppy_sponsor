@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { transactionContext } from '../context/TransactionContext'
 import useFetchedGiphyImg from '../hooks/useFetchedGiphyImg'
 import { shortenAddress } from '../utils/shortenAddress'
