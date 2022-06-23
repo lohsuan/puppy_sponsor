@@ -1,9 +1,10 @@
-import React, { useContext, useRef, useState } from 'react'
-import { isImageFile, isImageUrlStr, uploadMedia } from '../utils/img'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { isImageFile, isImageUrlStr } from '../utils/img'
 import { isValidDateStr } from '../utils/date'
 import { useDebounce, useToggle } from 'react-use'
 import { transactionContext } from '../context/TransactionContext'
 import Swal from 'sweetalert'
+import { uploadFile } from '../utils/ipfs'
 
 /**
  * Content management pages for third-party agencies.
@@ -15,25 +16,33 @@ const AddPuppyPage = () => {
   const defaultNewPuppyImgPlaceHolderUrl = '/default-placeholder.webp'
 
   const { createNewPuppy, owner, currentAccount } = useContext(transactionContext)
-
-  owner().then((_owner) => {
-    if (currentAccount !== _owner) {
-      Swal({
-        icon: 'error',
-        title: 'You are not able to add puppy',
-        text: 'Transaction will fail since you are not owner.\nPlease login as the foundation owner and try again.'
-      }).then()
-    }
-  })
-
   const [newPuppyName, setNewPuppyName] = useState('')
   const [newPuppyBirthday, setNewPuppyBirthday] = useState('')
   const [newPuppyDesc, setNewPuppyDesc] = useState('')
   const [newPuppyImgUrl, setNewPuppyImgUrl] = useState(defaultNewPuppyImgPlaceHolderUrl)
   const [isProcessing, setIsProcessing] = useToggle(false)
   const [isFormValid, setIsFormValid] = useToggle(false)
+  const [isOwner, setIsOwner] = useState(false)
 
   const fileUploader = useRef(null)
+
+  const warnIfNotOwner = () => {
+    owner().then((_owner) => {
+      if (currentAccount !== _owner) {
+        Swal({
+          icon: 'error',
+          title: 'You are not able to add puppy',
+          text: 'Transaction will fail since you are not owner.\nPlease login as the foundation owner and try again.'
+        }).then()
+      } else {
+        setIsOwner(true)
+      }
+    })
+  }
+
+  useEffect(() => {
+    warnIfNotOwner()
+  }, [isOwner])
 
   useDebounce(
     () =>
@@ -69,7 +78,7 @@ const AddPuppyPage = () => {
     }
 
     setIsProcessing(true)
-    const { url } = await uploadMedia(file, 'webp')
+    const { url } = await uploadFile(file)
     setIsProcessing(false)
 
     if (url) {
