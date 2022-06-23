@@ -332,6 +332,7 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
       const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
 
       setCurrentAccount(accounts[0].toLowerCase())
+      await updateChainContents()
     } catch (error) {
       console.warn('No ethereum object', error)
     }
