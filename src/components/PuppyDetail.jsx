@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom'
 import { transactionContext } from '../context/TransactionContext'
 import { Loader } from '.'
 import { shortenAddress } from '../utils/shortenAddress'
+import { useToggle } from 'react-use'
+import Swal from 'sweetalert'
 
 const Input = ({ placeholder, name, type, value, handleChange }) => (
   <input
@@ -21,18 +23,43 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
  * @returns {JSXElement} PuppyCard, with a donate button.
  * */
 const PuppyDetail = () => {
-  const { handleChange, puppies, donateForPuppy, formData, isLoading, transactions } =
+  const { handleChange, puppies, donateForPuppy, formData, transactions } =
     useContext(transactionContext)
   const params = useParams()
   const puppy = puppies.find((puppy) => puppy.puppyId === params.id)
+  const [isProcessing, setIsProcessing] = useToggle(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     const { amount, keyword, message } = formData
     e.preventDefault()
 
     if (!amount || !keyword || !message) return
 
-    donateForPuppy(puppy.puppyId)
+    setIsProcessing(true)
+    const ok = await donateForPuppy(puppy.puppyId)
+
+    if (!ok) {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      })
+    } else {
+      await Swal({
+        icon: 'success',
+        title: 'Nice!',
+        text:
+          'Thank you!\nYou have donated ' +
+          amount +
+          ' ETH to ' +
+          puppy.name +
+          '!\n You will get ' +
+          Math.floor(amount * 1000) +
+          ' PUPPY TOKEN from us as a reward.'
+      })
+    }
+
+    setIsProcessing(false)
   }
 
   return (
@@ -76,7 +103,7 @@ const PuppyDetail = () => {
 
               <div className="h-[1px] w-full bg-gray-400 my-2" />
 
-              {isLoading ? (
+              {isProcessing ? (
                 <Loader />
               ) : (
                 <button
