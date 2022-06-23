@@ -118,10 +118,10 @@ const PuppyTokenPage = () => {
   }
 
   return (
-    <div className="flex w-full min-h-screen justify-center items-center 2xl:px-20 gradient-bg-transactions">
+    <div className="flex min-h-screen justify-center items-center gradient-bg-transactions">
       <div className="md:p-12 py-12 px-4">
         {currentAccount ? (
-          <div>
+          <div className="m-auto p-3 min-w-[60vw] md:w-auto xl:max-w-[70vw]">
             {/* My Tokens */}
             <p className="text-xl text-white m-auto p-3 max-w-[90vw] xl:max-w-[70vw] md:w-auto">
               My Tokens
@@ -236,9 +236,11 @@ const PuppyTokenPage = () => {
             )}
           </div>
         ) : (
-          <h3 className="text-white text-3xl text-center my-2">
-            Connect your account to see your tokens and do operations
-          </h3>
+          <div className="flex flex-col md:p-12 py-12 px-4">
+            <h3 className="text-white text-3xl text-center my-2">
+              Connect your account to see your tokens and do operations
+            </h3>
+          </div>
         )}
       </div>
     </div>
