@@ -5,7 +5,7 @@ import { contractABI, contractAddress, tokenABI, tokenAddress } from '../utils/c
 import { useSetState, useToggle } from 'react-use'
 import Swal from 'sweetalert'
 
-export const transactionContext = React.createContext(undefined, undefined)
+export const transactionContext = React.createContext({})
 
 declare global {
   interface Window {
@@ -25,13 +25,16 @@ export interface NewPuppyInfo {
 const globalWindow: Window = window
 const ethereumProvider = globalWindow.ethereum
 
-const createEthereumContractClient = (address, ABI): Contract => {
+const createEthereumContractClient = (
+  address: string,
+  ABI: ethers.ContractInterface
+): Contract | undefined => {
   if (!ethereumProvider) {
     Swal({
       icon: 'info',
       title: 'Please install MetaMask!'
     }).then()
-    return
+    return undefined
   }
 
   const provider = new ethers.providers.Web3Provider(ethereumProvider)
@@ -41,7 +44,7 @@ const createEthereumContractClient = (address, ABI): Contract => {
 
 const defaultDonationFormData = { amount: '', keyword: '', message: '' }
 
-export const TransactionsProvider = ({ children }) => {
+export const TransactionsProvider = ({ children }: { children: React.ReactNode }) => {
   const [donationFormData, setDonationFormData] = useSetState(defaultDonationFormData)
   const [currentAccount, setCurrentAccount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -54,7 +57,7 @@ export const TransactionsProvider = ({ children }) => {
   const contract = createEthereumContractClient(contractAddress, contractABI)
   const puppyToken = createEthereumContractClient(tokenAddress, tokenABI)
 
-  const handleChange = (e: React.FormEvent<HTMLInputElement>, name: string): void => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, name: string): void => {
     setDonationFormData((prevState: typeof donationFormData) => ({
       ...prevState,
       [name]: e.target.value
@@ -86,11 +89,11 @@ export const TransactionsProvider = ({ children }) => {
 
   const getAllTransactions = async (): Promise<void> => {
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const availableTransactions = await contract.getAllDonateTransactions()
         console.info('availableTransactions', availableTransactions)
 
-        const structuredTransactions = availableTransactions.map((transaction) => ({
+        const structuredTransactions = availableTransactions.map((transaction: any) => ({
           addressFrom: transaction.donor,
           addressTo: transaction.receiver,
           amount: Number.parseInt(transaction.amount._hex) / 10 ** 18,
@@ -110,12 +113,12 @@ export const TransactionsProvider = ({ children }) => {
   }
 
   const owner = async (): Promise<string> => {
-    return (await contract.owner()).toLowerCase()
+    return contract ? (await contract.owner()).toLowerCase() : ''
   }
 
   const getAllPuppies = async (): Promise<void> => {
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const availablePuppies = await contract.getAllPuppies()
 
         console.info('puppies', availablePuppies)
@@ -131,8 +134,8 @@ export const TransactionsProvider = ({ children }) => {
 
   const getPuppyTokenBalance = async (): Promise<void> => {
     try {
-      if (ethereumProvider) {
-        const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
+      if (ethereumProvider && puppyToken) {
+        const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
         let tokenBalance = await puppyToken.balanceOf(accounts[0])
         tokenBalance = Number.parseInt(tokenBalance._hex)
 
@@ -149,7 +152,7 @@ export const TransactionsProvider = ({ children }) => {
 
   const getPuppyTokenSymbol = async (): Promise<void> => {
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && puppyToken) {
         let symbol = await puppyToken.symbol()
 
         console.info('symbol', symbol)
@@ -166,7 +169,7 @@ export const TransactionsProvider = ({ children }) => {
   const transferPuppyToken = async (
     to: NonEmptyString,
     amount: number
-  ): Promise<ContractReceipt> => {
+  ): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
@@ -174,6 +177,11 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (!ethereumProvider) {
         console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
         return
       }
 
@@ -186,7 +194,7 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const mintPuppyToken = async (amount: number): Promise<ContractReceipt> => {
+  const mintPuppyToken = async (amount: number): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
@@ -194,6 +202,11 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (!ethereumProvider) {
         console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
         return
       }
 
@@ -209,7 +222,7 @@ export const TransactionsProvider = ({ children }) => {
   const burnPuppyToken = async (
     address: NonEmptyString,
     amount: number
-  ): Promise<ContractReceipt> => {
+  ): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
@@ -217,6 +230,11 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (!ethereumProvider) {
         console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
         return
       }
 
@@ -229,7 +247,7 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const transferOwner = async (newOwner: NonEmptyString): Promise<ContractReceipt> => {
+  const transferOwner = async (newOwner: NonEmptyString): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
@@ -237,6 +255,11 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (!ethereumProvider) {
         console.info('No ethereum object')
+        return
+      }
+
+      if (!puppyToken) {
+        console.warn('puppyToken contract client is not initialized')
         return
       }
 
@@ -253,10 +276,10 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const checkTokenContractOwner = async (): Promise<string> => {
+  const checkTokenContractOwner = async (): Promise<string | undefined> => {
     try {
-      if (ethereumProvider) {
-        const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
+      if (ethereumProvider && puppyToken) {
+        const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
         let owner = (await puppyToken.owner()).toLowerCase()
 
         console.info('tokenOwner', owner)
@@ -269,6 +292,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.warn(error)
+      return
     }
   }
 
@@ -282,7 +306,7 @@ export const TransactionsProvider = ({ children }) => {
         return
       }
 
-      const accounts = await ethereumProvider.request({ method: 'eth_accounts' })
+      const accounts = await ethereumProvider.request!({ method: 'eth_accounts' })
 
       if (accounts.length) {
         setCurrentAccount(accounts[0])
@@ -305,7 +329,7 @@ export const TransactionsProvider = ({ children }) => {
         return
       }
 
-      const accounts = await ethereumProvider.request({ method: 'eth_requestAccounts' })
+      const accounts = await ethereumProvider.request!({ method: 'eth_requestAccounts' })
 
       setCurrentAccount(accounts[0].toLowerCase())
     } catch (error) {
@@ -313,13 +337,13 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const donateForFood = async (): Promise<ContractReceipt> => {
+  const donateForFood = async (): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
 
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const { amount, keyword, message } = donationFormData
 
         const options = { value: ethers.utils.parseEther(amount) }
@@ -334,13 +358,13 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const donateForPuppy = async (puppyId): Promise<ContractReceipt> => {
+  const donateForPuppy = async (puppyId: string): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
 
     try {
-      if (ethereumProvider) {
+      if (ethereumProvider && contract) {
         const { amount, keyword, message } = donationFormData
 
         const options = { value: ethers.utils.parseEther(amount) }
@@ -355,7 +379,9 @@ export const TransactionsProvider = ({ children }) => {
     }
   }
 
-  const createNewPuppy = async (newPuppyInfo: NewPuppyInfo): Promise<ContractReceipt> => {
+  const createNewPuppy = async (
+    newPuppyInfo: NewPuppyInfo
+  ): Promise<ContractReceipt | undefined> => {
     if (isLoading) {
       return
     }
@@ -363,6 +389,11 @@ export const TransactionsProvider = ({ children }) => {
     try {
       if (!ethereumProvider) {
         console.info('No ethereum object')
+        return
+      }
+
+      if (!contract) {
+        console.warn('puppySponsor contract client is not initialized')
         return
       }
 
