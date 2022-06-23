@@ -2,10 +2,11 @@ import { useContext } from 'react'
 import { AiFillPlayCircle } from 'react-icons/ai'
 import { SiEthereum } from 'react-icons/si'
 import { BsInfoCircle } from 'react-icons/bs'
-
 import { transactionContext } from '../context/TransactionContext'
 import { shortenAddress } from '../utils/shortenAddress'
 import { Loader } from '.'
+import { useToggle } from 'react-use'
+import Swal from 'sweetalert'
 
 const companyCommonStyles =
   'min-h-[70px] sm:px-0 px-2 sm:min-w-[120px] flex justify-center items-center border-[0.5px] border-gray-400 text-sm font-light text-white'
@@ -22,17 +23,40 @@ const Input = ({ placeholder, name, type, value, handleChange }) => (
 )
 
 const Welcome = () => {
-  const { currentAccount, connectWallet, handleChange, donateForFood, formData, isLoading } =
+  const { currentAccount, connectWallet, handleChange, donateForFood, formData } =
     useContext(transactionContext)
+  const [isProcessing, setIsProcessing] = useToggle(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     const { amount, keyword, message } = formData
     console.log(currentAccount)
     e.preventDefault()
 
     if (!amount || !keyword || !message) return
 
-    donateForFood()
+    setIsProcessing(true)
+    const ok = await donateForFood()
+
+    if (!ok) {
+      await Swal({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong!'
+      })
+    } else {
+      await Swal({
+        icon: 'success',
+        title: 'Nice!',
+        text:
+          'Thank you!\nYou have donated ' +
+          amount +
+          ' ETH to PuppySponsor!\n You will get ' +
+          Math.floor(amount * 1000) +
+          ' PUPPY TOKEN from us as a reward.'
+      })
+    }
+
+    setIsProcessing(false)
   }
 
   return (
@@ -111,7 +135,7 @@ const Welcome = () => {
 
             <div className="h-[1px] w-full bg-gray-400 my-2" />
 
-            {isLoading ? (
+            {isProcessing ? (
               <Loader />
             ) : (
               <button
