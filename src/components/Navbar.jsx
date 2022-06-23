@@ -13,13 +13,13 @@ const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false)
 
   return (
-    <nav className="w-full flex md:justify-center justify-between items-center p-4">
-      <div className="md:flex-[0.6] flex-nowrap flex-row justify-center items-center">
+    <nav className="w-full flex lg:justify-center justify-between items-center p-4">
+      <div className="lg:flex-[0.6] flex-nowrap flex-row justify-center items-center">
         <Link to="/">
           <img src="/font_logo.png" alt="logo" className="h-16 cursor-pointer" />
         </Link>
       </div>
-      <ul className="text-white md:flex hidden list-none flex-row justify-between items-center flex-initial">
+      <ul className="text-white lg:flex hidden list-none flex-row justify-between items-center flex-initial">
         <NavBarItem title="Home" path="" />
         <NavBarItem title="Puppies" path="puppies" />
         <NavBarItem title="Love Records" path="transactions" />
@@ -31,20 +31,20 @@ const Navbar = () => {
         {!toggleMenu && (
           <HiMenuAlt4
             fontSize={28}
-            className="text-white md:hidden cursor-pointer"
+            className="text-white lg:hidden cursor-pointer"
             onClick={() => setToggleMenu(true)}
           />
         )}
         {toggleMenu && (
           <AiOutlineClose
             fontSize={28}
-            className="text-white md:hidden cursor-pointer"
+            className="text-white lg:hidden cursor-pointer"
             onClick={() => setToggleMenu(false)}
           />
         )}
         {toggleMenu && (
           <ul
-            className="z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl md:hidden list-none
+            className="z-10 fixed -top-0 -right-2 p-3 w-[70vw] h-screen shadow-2xl lg:hidden list-none
                                 flex flex-col justify-start items-end rounded-md blue-glassmorphism text-white animate-slide-in"
           >
             <li className="text-xl w-full my-2">
