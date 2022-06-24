@@ -29,10 +29,18 @@ const Welcome = () => {
 
   const handleSubmit = async (e) => {
     const { amount, keyword, message } = formData
-    console.log(currentAccount)
     e.preventDefault()
 
     if (!amount || !keyword || !message) return
+
+    if(amount < 0.001){
+      await Swal({
+        icon: 'warning',
+        title: 'Sorry :(',
+        text: 'Donation amount should be greater than 0.001.'
+      })
+      return
+    }
 
     setIsProcessing(true)
     const ok = await donateForFood()
