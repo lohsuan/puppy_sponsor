@@ -398,6 +398,9 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     checkIfWalletIsConnect().then()
+    ethereumProvider.on('accountsChanged', function () {
+      connectWallet()
+    })
   }, [])
 
   return (
