@@ -398,6 +398,10 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     checkIfWalletIsConnect().then()
+    ethereumProvider?.on('accountsChanged', connectWallet)
+    return () => {
+      ethereumProvider?.removeListener("accountsChanged", connectWallet);
+    };
   }, [])
 
   return (
