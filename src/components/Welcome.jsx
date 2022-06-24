@@ -33,7 +33,7 @@ const Welcome = () => {
 
     if (!amount || !keyword || !message) return
 
-    if(amount < 0.001){
+    if (amount < 0.001) {
       await Swal({
         icon: 'warning',
         title: 'Sorry :(',
