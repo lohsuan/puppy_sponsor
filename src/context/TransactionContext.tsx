@@ -119,7 +119,6 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
     try {
       if (ethereumProvider && contract) {
         const availablePuppies = await contract.getAllPuppies()
-        console.info("puppies", availablePuppies)
         setPuppies(availablePuppies)
       } else {
         console.info('Ethereum is not present')
@@ -260,11 +259,6 @@ export const TransactionsProvider = ({ children }: { children: React.ReactNode }
 
       return transactionPromise(contractTx)
     } catch (e) {
-      await Swal({
-        icon: 'info',
-        title:
-          'Something went wrong.\n Check if the address is valid, \n and you have the right to change owner.'
-      })
       console.warn('An error occurred during transferOwner', e)
     }
   }
